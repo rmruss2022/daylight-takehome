@@ -308,11 +308,16 @@ function renderDevices(devices) {
         </div>
 
         <div style="margin-top: var(--space-4);">
-          ${device.status === 'ONLINE'
-            ? '<span class="badge badge-online"><span class="badge-dot"></span> Online</span>'
-            : '<span class="badge badge-offline"><span class="badge-dot"></span> Offline</span>'
+          ${device.mode 
+            ? (device.mode === 'CHARGING' 
+                ? '<span class="badge badge-online"><span class="badge-dot"></span> Charging</span>'
+                : device.mode === 'DRIVING'
+                  ? '<span class="badge badge-offline"><span class="badge-dot"></span> Driving</span>'
+                  : '<span class="badge badge-offline"><span class="badge-dot"></span> Disconnected</span>')
+            : (device.status === 'ONLINE'
+                ? '<span class="badge badge-online"><span class="badge-dot"></span> Online</span>'
+                : '<span class="badge badge-offline"><span class="badge-dot"></span> Offline</span>')
           }
-          ${device.mode ? `<span class="badge badge-${device.mode === 'CHARGING' ? 'charging' : 'discharging'}">${device.mode.toLowerCase()}</span>` : ''}
         </div>
 
         ${deviceType === 'storage' && device.capacityKwh ? renderStorageViz(device) : ''}
