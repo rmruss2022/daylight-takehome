@@ -90,6 +90,14 @@ A comprehensive smart home energy management system with real-time monitoring, d
 4. **Redis** stores current state with 60-second TTL
 5. **API Layer** aggregates and serves data to clients
 
+## ☁️ Deploy to Production
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/rmruss2022/daylight-takehome)
+
+**One-click deployment to Railway** - Automatically sets up Django, PostgreSQL, Redis, and Celery workers.
+
+For detailed deployment instructions, see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
+
 ## 🚀 Quick Start
 
 ### Prerequisites
