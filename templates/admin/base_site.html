@@ -1,0 +1,46 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Daylight Energy Admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">⚡ Daylight Energy</a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/admin-custom.css' %}">
+<style>
+    /* Additional inline styles for immediate effect */
+    #site-name a {
+        background: linear-gradient(135deg, #00d4ff, #00ff88);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+</style>
+{% endblock %}
+
+{% block userlinks %}
+<div style="display: flex; align-items: center; gap: 1rem;">
+    {% if site_url %}
+        <a href="{{ site_url }}" style="color: var(--color-energy-storage); text-decoration: none; font-weight: 600;">🏠 View Dashboard</a>
+    {% endif %}
+    {{ block.super }}
+</div>
+{% endblock %}
+
+{% block footer %}
+<div id="footer" style="background: rgba(10, 14, 39, 0.95); border-top: 2px solid rgba(0, 212, 255, 0.2); padding: 1.5rem; text-align: center; color: #94a3b8; font-family: 'Manrope', sans-serif;">
+    <p>
+        <strong style="background: linear-gradient(135deg, #00d4ff, #00ff88); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Daylight Energy Management System</strong>
+        <span style="margin: 0 1rem; opacity: 0.5;">|</span>
+        Smart Home Energy Monitoring & Control
+    </p>
+    <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.7;">
+        Powered by Django {{ django_version }} • Real-time energy analytics
+    </p>
+</div>
+{% endblock %}

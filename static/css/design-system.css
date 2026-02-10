@@ -1,0 +1,290 @@
+/* ============================================
+   KINETIC ENERGY DESIGN SYSTEM
+   Smart Home Energy Management Platform
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ========== Color Palette ========== */
+
+  /* Base Colors - Deep Midnight Theme */
+  --color-void: #050812;
+  --color-deep-navy: #0a0e27;
+  --color-midnight: #12182e;
+  --color-slate: #1a1f3a;
+  --color-slate-light: #252b4a;
+
+  /* Energy Production - Vibrant Greens */
+  --color-energy-production: #00ff88;
+  --color-production-bright: #14f195;
+  --color-production-dim: #00cc6a;
+  --color-production-glow: rgba(0, 255, 136, 0.25);
+
+  /* Energy Consumption - Warm Amber/Orange */
+  --color-energy-consumption: #ff8c42;
+  --color-consumption-bright: #ffb84d;
+  --color-consumption-dim: #ff6b35;
+  --color-consumption-glow: rgba(255, 140, 66, 0.25);
+
+  /* Energy Storage - Electric Cyan/Teal */
+  --color-energy-storage: #00d4ff;
+  --color-storage-bright: #3dd5f3;
+  --color-storage-dim: #00a8cc;
+  --color-storage-glow: rgba(0, 212, 255, 0.25);
+
+  /* Accent Colors */
+  --color-accent-purple: #b24bf3;
+  --color-accent-magenta: #e879f9;
+  --color-accent-gold: #ffd700;
+
+  /* Neutral Colors */
+  --color-white: #ffffff;
+  --color-ice: #f0f4f8;
+  --color-silver: #cbd5e1;
+  --color-gray: #94a3b8;
+  --color-gray-dim: #64748b;
+
+  /* Status Colors */
+  --color-success: var(--color-energy-production);
+  --color-warning: var(--color-energy-consumption);
+  --color-error: #ff4757;
+  --color-info: var(--color-energy-storage);
+
+  /* ========== Gradients ========== */
+
+  /* Aurora Background Gradients */
+  --gradient-aurora:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(180, 75, 243, 0.15), transparent),
+    radial-gradient(ellipse 60% 80% at 120% 50%, rgba(0, 212, 255, 0.12), transparent),
+    radial-gradient(ellipse 100% 100% at -20% 100%, rgba(0, 255, 136, 0.1), transparent);
+
+  --gradient-aurora-bright:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(180, 75, 243, 0.25), transparent),
+    radial-gradient(ellipse 60% 80% at 120% 50%, rgba(0, 212, 255, 0.2), transparent),
+    radial-gradient(ellipse 100% 100% at -20% 100%, rgba(0, 255, 136, 0.18), transparent);
+
+  /* Card Gradients */
+  --gradient-card: linear-gradient(135deg, rgba(26, 31, 58, 0.8), rgba(18, 24, 46, 0.9));
+  --gradient-card-hover: linear-gradient(135deg, rgba(37, 43, 74, 0.85), rgba(26, 31, 58, 0.95));
+
+  /* Energy Flow Gradients */
+  --gradient-production: linear-gradient(135deg, var(--color-production-dim), var(--color-energy-production));
+  --gradient-consumption: linear-gradient(135deg, var(--color-consumption-dim), var(--color-energy-consumption));
+  --gradient-storage: linear-gradient(135deg, var(--color-storage-dim), var(--color-energy-storage));
+
+  /* Glass Morphism */
+  --glass-bg: rgba(26, 31, 58, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: blur(20px);
+
+  /* ========== Typography ========== */
+
+  --font-display: 'Rajdhani', sans-serif;
+  --font-body: 'Manrope', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Font Sizes */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 1.875rem;    /* 30px */
+  --text-4xl: 2.25rem;     /* 36px */
+  --text-5xl: 3rem;        /* 48px */
+  --text-6xl: 3.75rem;     /* 60px */
+
+  /* Font Weights */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  /* Line Heights */
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  /* ========== Spacing ========== */
+
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  /* ========== Borders & Radius ========== */
+
+  --radius-sm: 0.375rem;   /* 6px */
+  --radius-md: 0.5rem;     /* 8px */
+  --radius-lg: 0.75rem;    /* 12px */
+  --radius-xl: 1rem;       /* 16px */
+  --radius-2xl: 1.5rem;    /* 24px */
+  --radius-full: 9999px;
+
+  --border-width: 1px;
+  --border-width-thick: 2px;
+
+  /* ========== Shadows ========== */
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+
+  /* Glow Shadows */
+  --shadow-glow-production: 0 0 20px var(--color-production-glow), 0 0 40px var(--color-production-glow);
+  --shadow-glow-consumption: 0 0 20px var(--color-consumption-glow), 0 0 40px var(--color-consumption-glow);
+  --shadow-glow-storage: 0 0 20px var(--color-storage-glow), 0 0 40px var(--color-storage-glow);
+
+  /* ========== Transitions ========== */
+
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* ========== Z-Index Scale ========== */
+
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+}
+
+/* ========== Global Resets ========== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-ice);
+  background-color: var(--color-void);
+  background-image: var(--gradient-aurora);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* ========== Utility Classes ========== */
+
+.font-display { font-family: var(--font-display); }
+.font-body { font-family: var(--font-body); }
+.font-mono { font-family: var(--font-mono); }
+
+.text-production { color: var(--color-energy-production); }
+.text-consumption { color: var(--color-energy-consumption); }
+.text-storage { color: var(--color-energy-storage); }
+
+.bg-production { background: var(--gradient-production); }
+.bg-consumption { background: var(--gradient-consumption); }
+.bg-storage { background: var(--gradient-storage); }
+
+.glow-production { box-shadow: var(--shadow-glow-production); }
+.glow-consumption { box-shadow: var(--shadow-glow-consumption); }
+.glow-storage { box-shadow: var(--shadow-glow-storage); }
+
+/* ========== Animations ========== */
+
+@keyframes aurora-shift {
+  0%, 100% {
+    background-position: 0% 50%, 100% 50%, 0% 100%;
+  }
+  50% {
+    background-position: 100% 50%, 0% 50%, 100% 100%;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes energy-flow {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-pulse {
+  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

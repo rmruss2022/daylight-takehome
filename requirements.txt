@@ -1,0 +1,24 @@
+# Core Django
+Django==5.1.4
+psycopg[binary]==3.2.3
+
+# GraphQL
+strawberry-graphql[django]==0.250.0
+
+# Authentication
+PyJWT==2.9.0
+
+# Celery & Redis
+celery[redis]==5.4.0
+redis==5.1.1
+django-redis==5.4.0
+
+# Testing
+pytest==8.3.4
+pytest-django==4.9.0
+factory-boy==3.3.1
+freezegun==1.5.1
+pytest-cov==6.0.0
+
+# Development
+python-dotenv==1.0.1

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Dashboard - Smart Home Management</title>
+    <link rel="stylesheet" href="/static/css/design-system.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="navbar-brand">⚡ Daylight Energy</a>
+            <ul class="navbar-menu">
+                <li><a href="/" class="navbar-link active">Dashboard</a></li>
+                {% if user.is_staff %}
+                <li><a href="/admin/" class="navbar-link">Admin</a></li>
+                {% endif %}
+                <li><a href="/graphql/" class="navbar-link">GraphQL</a></li>
+                {% if user.is_authenticated %}
+                <li>
+                    <span class="navbar-link" style="opacity: 0.7; cursor: default;">
+                        👤 {{ user.username }}
+                    </span>
+                </li>
+                <li>
+                    <a href="{% url 'logout' %}" class="navbar-link" style="color: var(--color-energy-consumption);">
+                        Logout
+                    </a>
+                </li>
+                {% else %}
+                <li><a href="{% url 'login' %}" class="navbar-link">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <h1 class="dashboard-title">Energy Dashboard</h1>
+            <div class="dashboard-subtitle">
+                <span class="live-indicator">
+                    <span class="live-dot"></span>
+                    Live Data
+                </span>
+                <span id="last-update">Last updated: --:--:--</span>
+            </div>
+        </header>
+
+        <!-- Energy Overview Stats -->
+        <section class="energy-overview">
+            <h2 class="section-title">Energy Overview</h2>
+            <div class="stats-grid">
+                <!-- Production Card -->
+                <div class="card stat-card production">
+                    <div class="stat-label">Total Production</div>
+                    <div class="stat-value">
+                        <span id="production-value">0</span>
+                        <span class="stat-unit">W</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill production" id="production-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Consumption Card -->
+                <div class="card stat-card consumption">
+                    <div class="stat-label">Total Consumption</div>
+                    <div class="stat-value">
+                        <span id="consumption-value">0</span>
+                        <span class="stat-unit">W</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill consumption" id="consumption-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Storage Card -->
+                <div class="card stat-card storage">
+                    <div class="stat-label">Storage Level</div>
+                    <div class="stat-value">
+                        <span id="storage-percentage">0</span>
+                        <span class="stat-unit">%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill storage" id="storage-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="stat-subtitle" style="margin-top: var(--space-3); font-size: var(--text-sm); color: var(--color-gray);">
+                        <span id="storage-current">0</span> kWh / <span id="storage-total">0</span> kWh
+                    </div>
+                </div>
+
+                <!-- Net Grid Flow Card -->
+                <div class="card stat-card">
+                    <div class="stat-label">Net Grid Flow</div>
+                    <div class="stat-value">
+                        <span id="grid-flow-value">0</span>
+                        <span class="stat-unit">W</span>
+                    </div>
+                    <div class="stat-trend" id="grid-flow-trend">
+                        <span id="grid-flow-icon">→</span>
+                        <span id="grid-flow-status">Balanced</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Energy Flow Visualization -->
+        <section class="energy-flow-section">
+            <h2 class="section-title">Energy Flow</h2>
+            <div class="energy-flow-viz">
+                <div class="flow-diagram">
+                    <!-- Production Sources -->
+                    <div class="flow-source">
+                        <h3 style="font-family: var(--font-display); font-size: var(--text-lg); color: var(--color-energy-production); margin-bottom: var(--space-4); text-transform: uppercase;">Production</h3>
+                        <div class="flow-item">
+                            <div class="flow-item-icon production">☀️</div>
+                            <div class="flow-item-info">
+                                <div class="flow-item-label">Solar Panels</div>
+                                <div class="flow-item-value"><span id="solar-production">0</span> W</div>
+                            </div>
+                        </div>
+                        <div class="flow-item">
+                            <div class="flow-item-icon production">⚙️</div>
+                            <div class="flow-item-info">
+                                <div class="flow-item-label">Generators</div>
+                                <div class="flow-item-value"><span id="generator-production">0</span> W</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Home Center -->
+                    <div class="flow-center">
+                        <div class="home-icon">🏠</div>
+                        <div class="net-flow">
+                            <div class="net-flow-label">Net Flow</div>
+                            <div class="net-flow-value" id="net-flow-center">0 W</div>
+                        </div>
+                    </div>
+
+                    <!-- Consumption & Storage -->
+                    <div class="flow-destination">
+                        <h3 style="font-family: var(--font-display); font-size: var(--text-lg); color: var(--color-energy-consumption); margin-bottom: var(--space-4); text-transform: uppercase;">Consumption & Storage</h3>
+                        <div class="flow-item">
+                            <div class="flow-item-icon consumption">❄️</div>
+                            <div class="flow-item-info">
+                                <div class="flow-item-label">HVAC Systems</div>
+                                <div class="flow-item-value"><span id="hvac-consumption">0</span> W</div>
+                            </div>
+                        </div>
+                        <div class="flow-item">
+                            <div class="flow-item-icon storage">🔋</div>
+                            <div class="flow-item-info">
+                                <div class="flow-item-label">Battery Storage</div>
+                                <div class="flow-item-value"><span id="battery-flow">0</span> W</div>
+                            </div>
+                        </div>
+                        <div class="flow-item">
+                            <div class="flow-item-icon storage">🚗</div>
+                            <div class="flow-item-info">
+                                <div class="flow-item-label">Electric Vehicles</div>
+                                <div class="flow-item-value"><span id="ev-flow">0</span> W</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Devices Grid -->
+        <section class="devices-section">
+            <h2 class="section-title">Connected Devices</h2>
+            <div class="device-grid" id="device-grid">
+                <!-- Devices will be dynamically loaded here -->
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚡</div>
+                    <h3 class="empty-state-title">No Devices Connected</h3>
+                    <p class="empty-state-text">Add devices to start monitoring your energy usage</p>
+                    <a href="/admin/devices/" class="btn btn-primary">Manage Devices</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- SVG Gradient Definitions -->
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <linearGradient id="gradient-production" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color: #00cc6a; stop-opacity: 1" />
+                <stop offset="100%" style="stop-color: #00ff88; stop-opacity: 1" />
+            </linearGradient>
+            <linearGradient id="gradient-consumption" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color: #ff6b35; stop-opacity: 1" />
+                <stop offset="100%" style="stop-color: #ff8c42; stop-opacity: 1" />
+            </linearGradient>
+            <linearGradient id="gradient-storage" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color: #00a8cc; stop-opacity: 1" />
+                <stop offset="100%" style="stop-color: #00d4ff; stop-opacity: 1" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- Scripts -->
+    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/energy-viz.js"></script>
+</body>
+</html>

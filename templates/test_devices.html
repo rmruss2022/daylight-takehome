@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Device Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1f3a; color: #f0f4f8; }
+        pre { background: #0a0e27; padding: 20px; border-radius: 8px; overflow-x: auto; }
+        button { padding: 10px 20px; background: #00d4ff; border: none; border-radius: 4px; cursor: pointer; }
+        .error { color: #ff4757; }
+        .success { color: #00ff88; }
+    </style>
+</head>
+<body>
+    <h1>Device GraphQL Test</h1>
+    <button onclick="testQuery()">Test Query</button>
+    <div id="status"></div>
+    <pre id="result"></pre>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        async function testQuery() {
+            const status = document.getElementById('status');
+            const result = document.getElementById('result');
+
+            status.innerHTML = '<span>Fetching...</span>';
+
+            const query = `
+                query {
+                  allDevices {
+                    __typename
+                    ... on SolarPanelType {
+                      id
+                      name
+                      status
+                      maxCapacityW
+                    }
+                    ... on GeneratorType {
+                      id
+                      name
+                      status
+                      ratedOutputW
+                    }
+                    ... on BatteryType {
+                      id
+                      name
+                      status
+                      capacityKwh
+                      chargePercentage
+                    }
+                    ... on ElectricVehicleType {
+                      id
+                      name
+                      status
+                      mode
+                      chargePercentage
+                    }
+                    ... on AirConditionerType {
+                      id
+                      name
+                      status
+                      ratedPowerW
+                    }
+                    ... on HeaterType {
+                      id
+                      name
+                      status
+                      ratedPowerW
+                    }
+                  }
+                }
+            `;
+
+            try {
+                const csrftoken = getCookie('csrftoken');
+                const response = await fetch('/graphql/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ query })
+                });
+
+                const data = await response.json();
+
+                if (data.errors) {
+                    status.innerHTML = '<span class="error">Error!</span>';
+                    result.textContent = JSON.stringify(data.errors, null, 2);
+                } else {
+                    status.innerHTML = `<span class="success">Success! Found ${data.data.allDevices.length} devices</span>`;
+                    result.textContent = JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                status.innerHTML = '<span class="error">Exception!</span>';
+                result.textContent = error.toString();
+            }
+        }
+    </script>
+</body>
+</html>

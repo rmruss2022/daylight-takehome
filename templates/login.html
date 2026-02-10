@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Daylight Energy</title>
+    <link rel="stylesheet" href="/static/css/design-system.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-8);
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 480px;
+            background: var(--gradient-card);
+            border: var(--border-width) solid var(--glass-border);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-10);
+            backdrop-filter: var(--glass-blur);
+            box-shadow: var(--shadow-xl);
+            animation: slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--space-8);
+        }
+
+        .login-logo {
+            font-size: 64px;
+            margin-bottom: var(--space-4);
+        }
+
+        .login-title {
+            font-family: var(--font-display);
+            font-size: var(--text-3xl);
+            font-weight: var(--weight-bold);
+            color: var(--color-white);
+            margin-bottom: var(--space-2);
+            background: linear-gradient(135deg, var(--color-energy-storage), var(--color-energy-production));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .login-subtitle {
+            color: var(--color-gray);
+            font-size: var(--text-base);
+        }
+
+        .error-message {
+            background: rgba(255, 71, 87, 0.15);
+            border: var(--border-width) solid #ff4757;
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            margin-bottom: var(--space-6);
+            color: #ff6b81;
+            font-size: var(--text-sm);
+            animation: fade-in 0.3s;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+
+        .demo-credentials {
+            background: rgba(0, 212, 255, 0.1);
+            border: var(--border-width) solid rgba(0, 212, 255, 0.3);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            margin-top: var(--space-6);
+            font-size: var(--text-sm);
+        }
+
+        .demo-credentials h4 {
+            color: var(--color-energy-storage);
+            font-weight: var(--weight-semibold);
+            margin-bottom: var(--space-2);
+        }
+
+        .demo-credentials p {
+            color: var(--color-silver);
+            margin: var(--space-1) 0;
+        }
+
+        .demo-credentials code {
+            font-family: var(--font-mono);
+            color: var(--color-white);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="login-logo">⚡</div>
+                <h1 class="login-title">Daylight Energy</h1>
+                <p class="login-subtitle">Smart Home Energy Management</p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                <div class="error-message" style="{% if message.tags == 'success' %}background: rgba(0, 255, 136, 0.15); border-color: var(--color-energy-production); color: var(--color-production-bright);{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="/login/" class="login-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="form-input"
+                        required
+                        autofocus
+                        placeholder="Enter your username"
+                        value="{{ username }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-input"
+                        required
+                        placeholder="Enter your password"
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="demo-credentials">
+                <h4>Test Credentials</h4>
+                <p>Username: <code>testuser1</code></p>
+                <p>Password: <code>testpass123</code></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,258 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .admin-dashboard {
+        padding: var(--space-8) var(--space-6);
+    }
+
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-6);
+        margin-bottom: var(--space-8);
+    }
+
+    .stat-card {
+        background: var(--gradient-card);
+        border: var(--border-width) solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        backdrop-filter: var(--glass-blur);
+        box-shadow: var(--shadow-md);
+        transition: all var(--transition-base);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, transparent, currentColor, transparent);
+        opacity: 0.6;
+    }
+
+    .stat-card.production::before { color: var(--color-energy-production); }
+    .stat-card.consumption::before { color: var(--color-energy-consumption); }
+    .stat-card.storage::before { color: var(--color-energy-storage); }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card-icon {
+        font-size: 48px;
+        margin-bottom: var(--space-3);
+    }
+
+    .stat-card-label {
+        font-size: var(--text-sm);
+        color: var(--color-gray);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: var(--space-2);
+    }
+
+    .stat-card-value {
+        font-family: var(--font-mono);
+        font-size: var(--text-4xl);
+        font-weight: var(--weight-bold);
+        color: var(--color-white);
+        margin-bottom: var(--space-3);
+    }
+
+    .stat-card-link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--color-energy-storage);
+        text-decoration: none;
+        font-weight: var(--weight-semibold);
+        font-size: var(--text-sm);
+        transition: color var(--transition-base);
+    }
+
+    .stat-card-link:hover {
+        color: var(--color-storage-bright);
+    }
+
+    .quick-actions {
+        background: var(--gradient-card);
+        border: var(--border-width) solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        backdrop-filter: var(--glass-blur);
+        margin-bottom: var(--space-8);
+    }
+
+    .quick-actions h2 {
+        font-family: var(--font-display);
+        font-size: var(--text-xl);
+        color: var(--color-white);
+        margin-bottom: var(--space-4);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-4);
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-4);
+        background: rgba(255, 255, 255, 0.03);
+        border: var(--border-width) solid rgba(255, 255, 255, 0.08);
+        border-radius: var(--radius-lg);
+        color: var(--color-white);
+        text-decoration: none;
+        transition: all var(--transition-base);
+    }
+
+    .action-btn:hover {
+        background: rgba(0, 212, 255, 0.1);
+        border-color: var(--color-energy-storage);
+        transform: translateX(4px);
+    }
+
+    .action-btn-icon {
+        font-size: var(--text-2xl);
+    }
+
+    .recent-activity {
+        background: var(--gradient-card);
+        border: var(--border-width) solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        backdrop-filter: var(--glass-blur);
+    }
+
+    .recent-activity h2 {
+        font-family: var(--font-display);
+        font-size: var(--text-xl);
+        color: var(--color-white);
+        margin-bottom: var(--space-4);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <h1 style="font-family: var(--font-display); font-size: var(--text-4xl); color: var(--color-white); margin-bottom: var(--space-8); text-transform: uppercase; letter-spacing: 0.05em;">
+        Energy Management Dashboard
+    </h1>
+
+    <!-- Statistics Cards -->
+    <div class="dashboard-stats">
+        <div class="stat-card production">
+            <div class="stat-card-icon">☀️</div>
+            <div class="stat-card-label">Production Devices</div>
+            <div class="stat-card-value">{{ production_count }}</div>
+            <a href="{% url 'admin:devices_solarpanel_changelist' %}" class="stat-card-link">
+                Manage Solar Panels →
+            </a>
+        </div>
+
+        <div class="stat-card storage">
+            <div class="stat-card-icon">🔋</div>
+            <div class="stat-card-label">Storage Devices</div>
+            <div class="stat-card-value">{{ storage_count }}</div>
+            <a href="{% url 'admin:devices_battery_changelist' %}" class="stat-card-link">
+                Manage Storage →
+            </a>
+        </div>
+
+        <div class="stat-card consumption">
+            <div class="stat-card-icon">⚡</div>
+            <div class="stat-card-label">Consumption Devices</div>
+            <div class="stat-card-value">{{ consumption_count }}</div>
+            <a href="{% url 'admin:devices_airconditioner_changelist' %}" class="stat-card-link">
+                Manage Consumers →
+            </a>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-icon">👥</div>
+            <div class="stat-card-label">Total Users</div>
+            <div class="stat-card-value">{{ user_count }}</div>
+            <a href="{% url 'admin:auth_user_changelist' %}" class="stat-card-link">
+                Manage Users →
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h2>⚡ Quick Actions</h2>
+        <div class="action-grid">
+            <a href="{% url 'admin:devices_solarpanel_add' %}" class="action-btn">
+                <span class="action-btn-icon">☀️</span>
+                <span>Add Solar Panel</span>
+            </a>
+            <a href="{% url 'admin:devices_battery_add' %}" class="action-btn">
+                <span class="action-btn-icon">🔋</span>
+                <span>Add Battery</span>
+            </a>
+            <a href="{% url 'admin:devices_electricvehicle_add' %}" class="action-btn">
+                <span class="action-btn-icon">🚗</span>
+                <span>Add Electric Vehicle</span>
+            </a>
+            <a href="{% url 'admin:devices_generator_add' %}" class="action-btn">
+                <span class="action-btn-icon">⚙️</span>
+                <span>Add Generator</span>
+            </a>
+            <a href="{% url 'admin:devices_airconditioner_add' %}" class="action-btn">
+                <span class="action-btn-icon">❄️</span>
+                <span>Add Air Conditioner</span>
+            </a>
+            <a href="{% url 'admin:devices_heater_add' %}" class="action-btn">
+                <span class="action-btn-icon">🔥</span>
+                <span>Add Heater</span>
+            </a>
+            <a href="{% url 'admin:auth_user_add' %}" class="action-btn">
+                <span class="action-btn-icon">👤</span>
+                <span>Add User</span>
+            </a>
+            <a href="{% url 'dashboard' %}" class="action-btn">
+                <span class="action-btn-icon">📊</span>
+                <span>View Dashboard</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Activity / Model List -->
+    <div class="recent-activity">
+        <h2>📋 All Models</h2>
+        {% if app_list %}
+            {% for app in app_list %}
+                <div style="margin-bottom: var(--space-6);">
+                    <h3 style="font-family: var(--font-display); font-size: var(--text-lg); color: var(--color-energy-storage); margin-bottom: var(--space-3); text-transform: uppercase; letter-spacing: 0.05em;">
+                        {{ app.name }}
+                    </h3>
+                    <div class="action-grid">
+                        {% for model in app.models %}
+                            <a href="{{ model.admin_url }}" class="action-btn">
+                                <span class="action-btn-icon">📦</span>
+                                <span>{{ model.name }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
