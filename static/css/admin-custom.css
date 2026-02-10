@@ -825,13 +825,15 @@ body.main #nav-sidebar {
   z-index: 2 !important;
   padding: var(--space-1) var(--space-3) !important;
   font-size: var(--text-xs) !important;
-  background: var(--gradient-production) !important;
-  color: var(--color-void) !important;
+  background: rgba(0, 212, 255, 0.2) !important;
+  color: #00d4ff !important;
+  border: 1px solid rgba(0, 212, 255, 0.4) !important;
   border-radius: var(--radius-lg) !important;
   text-decoration: none !important;
-  font-weight: var(--weight-semibold) !important;
+  font-weight: var(--weight-bold) !important;
   transition: all var(--transition-base);
   display: inline-block !important;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2) !important;
 }
 
 /* Hide all addlinks that come after another addlink (duplicates) */
@@ -846,7 +848,10 @@ body.main #nav-sidebar {
 /* Hover effect for Add button */
 #nav-sidebar li .addlink:hover {
   transform: translateY(-50%) translateY(-2px) !important;
-  box-shadow: var(--shadow-lg), var(--shadow-glow-production) !important;
+  background: rgba(0, 212, 255, 0.3) !important;
+  border-color: rgba(0, 212, 255, 0.6) !important;
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4), 0 0 20px rgba(0, 212, 255, 0.3) !important;
+  color: #3dd5f3 !important;
 }
 
 #toggle-nav-sidebar {
