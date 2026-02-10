@@ -79,10 +79,9 @@ class Command(BaseCommand):
             name="Roof Solar Array",
             user=user,
             defaults={
-                'rated_power_kw': 8.0,
+                'panel_area_m2': 40.0,
                 'efficiency': 0.20,
-                'azimuth': 180,
-                'tilt': 30,
+                'max_capacity_w': 8000.0,
                 'status': 'online'
             }
         )
@@ -95,10 +94,9 @@ class Command(BaseCommand):
             name="Backyard Solar",
             user=user,
             defaults={
-                'rated_power_kw': 4.0,
+                'panel_area_m2': 20.0,
                 'efficiency': 0.18,
-                'azimuth': 180,
-                'tilt': 25,
+                'max_capacity_w': 4000.0,
                 'status': 'online'
             }
         )
@@ -111,7 +109,9 @@ class Command(BaseCommand):
             name="Central AC",
             user=user,
             defaults={
-                'rated_power_kw': 3.5,
+                'rated_power_w': 3500.0,
+                'min_power_w': 1000.0,
+                'max_power_w': 4500.0,
                 'status': 'online'
             }
         )
@@ -124,8 +124,7 @@ class Command(BaseCommand):
             name="Backup Generator",
             user=user,
             defaults={
-                'rated_power_kw': 10.0,
-                'fuel_type': 'natural_gas',
+                'rated_output_w': 10000.0,
                 'status': 'offline'
             }
         )
