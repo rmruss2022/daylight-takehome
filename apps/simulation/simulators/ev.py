@@ -1,8 +1,8 @@
 """Electric vehicle simulator with connection schedule."""
-
 from datetime import datetime, timedelta
 from typing import Dict, Any
 import random
+from django.utils import timezone
 from .base import BaseSimulator
 from apps.devices.models import EVMode
 
@@ -10,13 +10,17 @@ from apps.devices.models import EVMode
 class EVSimulator(BaseSimulator):
     """
     Simulates EV behavior with connection schedule.
-
     Schedule: Away 7 AM - 6 PM on weekdays, connected otherwise
     """
 
+    def _make_naive(self, dt):
+        """Convert timezone-aware datetime to naive UTC."""
+        if dt and dt.tzinfo:
+            return dt.replace(tzinfo=None)
+        return dt
+
     def simulate(self, timestamp: datetime) -> Dict[str, Any]:
         """Simulate EV behavior based on time and connection status."""
-
         if self.device.status != 'online':
             return {
                 **self.get_base_data(timestamp, 0.0),
@@ -29,7 +33,6 @@ class EVSimulator(BaseSimulator):
         # Determine if EV should be connected based on schedule
         is_weekday = timestamp.weekday() < 5  # Monday = 0, Friday = 4
         hour = timestamp.hour
-
         should_be_away = is_weekday and 7 <= hour < 18
 
         current_charge_kwh = self.device.current_charge_kwh
@@ -45,10 +48,12 @@ class EVSimulator(BaseSimulator):
 
             # Calculate energy consumed while driving
             if self.device.last_seen_at:
-                hours_away = (timestamp - self.device.last_seen_at).total_seconds() / 3600
+                # Ensure both timestamps are naive UTC for comparison
+                last_seen = self._make_naive(self.device.last_seen_at)
+                ts = self._make_naive(timestamp)
+                hours_away = (ts - last_seen).total_seconds() / 3600
                 # Update every minute, so small incremental consumption
                 energy_consumed_kwh = (self.device.driving_efficiency_kwh_per_hour / 60)
-
                 new_charge_kwh = max(0, current_charge_kwh - energy_consumed_kwh)
                 self.device.current_charge_kwh = new_charge_kwh
                 self.device.last_seen_at = timestamp
@@ -84,7 +89,6 @@ class EVSimulator(BaseSimulator):
                     capacity_kwh,
                     current_charge_kwh + (charge_rate_kw / 60)
                 )
-
                 self.device.current_charge_kwh = new_charge_kwh
                 self.device.last_seen_at = timestamp
                 self.device.save(update_fields=['current_charge_kwh', 'last_seen_at'])
