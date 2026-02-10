@@ -10,7 +10,7 @@ done
 
 # Wait for database to be ready
 echo "Waiting for database..."
-until python -c "import psycopg2; psycopg2.connect('$DATABASE_URL')" 2>/dev/null; do
+until python -c "import psycopg; psycopg.connect('$DATABASE_URL')" 2>/dev/null; do
   echo "Database is unavailable - sleeping"
   sleep 1
 done
