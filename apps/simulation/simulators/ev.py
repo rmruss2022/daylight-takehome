@@ -66,7 +66,7 @@ class EVSimulator(BaseSimulator):
                 'capacity_wh': capacity_kwh * 1000,
                 'current_level_wh': new_charge_kwh * 1000,
                 'flow_w': 0.0,
-                'mode': EVMode.OFFLINE,
+                'mode': EVMode.OFFLINE.value,
             }
         else:
             # EV is connected
@@ -98,7 +98,7 @@ class EVSimulator(BaseSimulator):
                     'capacity_wh': capacity_kwh * 1000,
                     'current_level_wh': new_charge_kwh * 1000,
                     'flow_w': flow_w,
-                    'mode': EVMode.CHARGING,
+                    'mode': EVMode.CHARGING.value,
                 }
             else:
                 # Idle (fully charged)
@@ -111,5 +111,5 @@ class EVSimulator(BaseSimulator):
                     'capacity_wh': capacity_kwh * 1000,
                     'current_level_wh': current_charge_kwh * 1000,
                     'flow_w': 0.0,
-                    'mode': EVMode.CHARGING,
+                    'mode': EVMode.CHARGING.value,
                 }

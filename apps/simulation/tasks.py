@@ -79,13 +79,17 @@ def simulate_device(device_id: int):
     # Store result in Redis
     if device_type in ['battery', 'electric_vehicle']:
         # Storage devices have different data structure
-        redis_client.store_device_storage(device_id, {
+        storage_data = {
             'capacity_wh': result['capacity_wh'],
             'current_level_wh': result['current_level_wh'],
             'flow_w': result['flow_w'],
             'timestamp': result['timestamp'],
             'status': result['status'],
-        })
+        }
+        # Include mode for EVs
+        if device_type == 'electric_vehicle' and 'mode' in result:
+            storage_data['mode'] = result['mode']
+        redis_client.store_device_storage(device_id, storage_data)
     else:
         # Production and consumption devices
         redis_client.store_device_data(device_id, result)

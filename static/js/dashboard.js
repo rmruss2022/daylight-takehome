@@ -309,12 +309,12 @@ function renderDevices(devices) {
 
         <div style="margin-top: var(--space-4);">
           ${device.mode 
-            ? (device.mode === 'CHARGING' 
+            ? (device.mode.toLowerCase() === 'charging' 
                 ? '<span class="badge badge-online"><span class="badge-dot"></span> Charging</span>'
-                : device.mode === 'DRIVING'
-                  ? '<span class="badge badge-offline"><span class="badge-dot"></span> Driving</span>'
+                : device.mode.toLowerCase() === 'discharging'
+                  ? '<span class="badge badge-online"><span class="badge-dot"></span> Discharging</span>'
                   : '<span class="badge badge-offline"><span class="badge-dot"></span> Disconnected</span>')
-            : (device.status === 'ONLINE'
+            : (device.status.toLowerCase() === 'online'
                 ? '<span class="badge badge-online"><span class="badge-dot"></span> Online</span>'
                 : '<span class="badge badge-offline"><span class="badge-dot"></span> Offline</span>')
           }

@@ -86,6 +86,18 @@ def convert_device_to_graphql(device):
     
     if redis_data and 'status' in redis_data:
         current_status = redis_data['status']
+    
+    # For EVs, override status based on mode (if EV is away/offline, status should reflect that)
+    ev_mode = None
+    if device_type == 'electric_vehicle':
+        if redis_data and 'mode' in redis_data:
+            ev_mode = redis_data['mode']
+        else:
+            ev_mode = specific_device.mode
+        
+        # If EV mode is OFFLINE, status should be OFFLINE regardless of DB status
+        if ev_mode == 'offline':
+            current_status = 'offline'
 
     if device_type == 'solar_panel':
         return SolarPanelType(
@@ -126,6 +138,8 @@ def convert_device_to_graphql(device):
             charge_percentage=specific_device.charge_percentage,
         )
     elif device_type == 'electric_vehicle':
+        # Use Redis mode if available, otherwise fall back to DB
+        mode_value = ev_mode if ev_mode else specific_device.mode
         return ElectricVehicleType(
             id=device.id,
             name=device.name,
@@ -137,7 +151,7 @@ def convert_device_to_graphql(device):
             current_charge_kwh=specific_device.current_charge_kwh,
             max_charge_rate_kw=specific_device.max_charge_rate_kw,
             max_discharge_rate_kw=specific_device.max_discharge_rate_kw,
-            mode=EVModeEnum[specific_device.mode.upper()],
+            mode=EVModeEnum[mode_value.upper()],
             last_seen_at=specific_device.last_seen_at,
             driving_efficiency_kwh_per_hour=specific_device.driving_efficiency_kwh_per_hour,
             charge_percentage=specific_device.charge_percentage,
