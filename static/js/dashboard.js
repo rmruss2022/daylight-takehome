@@ -308,16 +308,32 @@ function renderDevices(devices) {
         </div>
 
         <div style="margin-top: var(--space-4);">
-          ${device.mode 
-            ? (device.mode.toLowerCase() === 'charging' 
-                ? '<span class="badge badge-online"><span class="badge-dot"></span> Charging</span>'
-                : device.mode.toLowerCase() === 'discharging'
-                  ? '<span class="badge badge-online"><span class="badge-dot"></span> Discharging</span>'
-                  : '<span class="badge badge-offline"><span class="badge-dot"></span> Disconnected</span>')
-            : (device.status.toLowerCase() === 'online'
-                ? '<span class="badge badge-online"><span class="badge-dot"></span> Online</span>'
-                : '<span class="badge badge-offline"><span class="badge-dot"></span> Offline</span>')
-          }
+          ${(() => {
+            // DEBUG: Log device data for EVs
+            if (typename === 'ElectricVehicleType') {
+              console.log(`EV ${device.name}: status=${device.status}, mode=${device.mode}`);
+            }
+            
+            // For EVs, ONLY show mode badge (never show status)
+            if (device.mode) {
+              const mode = device.mode.toLowerCase();
+              if (mode === 'charging') {
+                return '<span class="badge badge-online"><span class="badge-dot"></span> Charging</span>';
+              } else if (mode === 'discharging') {
+                return '<span class="badge badge-online"><span class="badge-dot"></span> Discharging</span>';
+              } else {
+                // offline mode - show Disconnected
+                return '<span class="badge badge-offline"><span class="badge-dot"></span> Disconnected</span>';
+              }
+            }
+            
+            // For non-EVs, show status badge
+            if (device.status && device.status.toLowerCase() === 'online') {
+              return '<span class="badge badge-online"><span class="badge-dot"></span> Online</span>';
+            } else {
+              return '<span class="badge badge-offline"><span class="badge-dot"></span> Offline</span>';
+            }
+          })()}
         </div>
 
         ${deviceType === 'storage' && device.capacityKwh ? renderStorageViz(device) : ''}
