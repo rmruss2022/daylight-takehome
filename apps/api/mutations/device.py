@@ -14,6 +14,7 @@ from apps.api.types.device_types import (
     DeviceStatusEnum, EVModeEnum
 )
 from apps.api.permissions import IsAuthenticated
+from apps.simulation.redis_client import RedisClient
 
 
 @strawberry.enum
@@ -72,12 +73,25 @@ def convert_device_to_graphql(device):
     """Convert Django model to GraphQL type."""
     device_type = device.get_device_type()
     specific_device = device.get_specific_device()
+    
+    # Get current status from Redis (simulation state)
+    redis_client = RedisClient()
+    current_status = device.status  # Default to DB status
+    
+    # Check Redis for real-time simulation status
+    if device_type in ['battery', 'electric_vehicle']:
+        redis_data = redis_client.get_device_storage(device.id)
+    else:
+        redis_data = redis_client.get_device_data(device.id)
+    
+    if redis_data and 'status' in redis_data:
+        current_status = redis_data['status']
 
     if device_type == 'solar_panel':
         return SolarPanelType(
             id=device.id,
             name=device.name,
-            status=DeviceStatusEnum[device.status.upper()],
+            status=DeviceStatusEnum[current_status.upper()],
             device_type=device_type,
             created_at=device.created_at,
             updated_at=device.updated_at,
@@ -91,7 +105,7 @@ def convert_device_to_graphql(device):
         return GeneratorType(
             id=device.id,
             name=device.name,
-            status=DeviceStatusEnum[device.status.upper()],
+            status=DeviceStatusEnum[current_status.upper()],
             device_type=device_type,
             created_at=device.created_at,
             updated_at=device.updated_at,
@@ -101,7 +115,7 @@ def convert_device_to_graphql(device):
         return BatteryType(
             id=device.id,
             name=device.name,
-            status=DeviceStatusEnum[device.status.upper()],
+            status=DeviceStatusEnum[current_status.upper()],
             device_type=device_type,
             created_at=device.created_at,
             updated_at=device.updated_at,
@@ -115,7 +129,7 @@ def convert_device_to_graphql(device):
         return ElectricVehicleType(
             id=device.id,
             name=device.name,
-            status=DeviceStatusEnum[device.status.upper()],
+            status=DeviceStatusEnum[current_status.upper()],
             device_type=device_type,
             created_at=device.created_at,
             updated_at=device.updated_at,
@@ -132,7 +146,7 @@ def convert_device_to_graphql(device):
         return AirConditionerType(
             id=device.id,
             name=device.name,
-            status=DeviceStatusEnum[device.status.upper()],
+            status=DeviceStatusEnum[current_status.upper()],
             device_type=device_type,
             created_at=device.created_at,
             updated_at=device.updated_at,
@@ -144,7 +158,7 @@ def convert_device_to_graphql(device):
         return HeaterType(
             id=device.id,
             name=device.name,
-            status=DeviceStatusEnum[device.status.upper()],
+            status=DeviceStatusEnum[current_status.upper()],
             device_type=device_type,
             created_at=device.created_at,
             updated_at=device.updated_at,
