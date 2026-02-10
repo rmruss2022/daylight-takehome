@@ -1,0 +1,29 @@
+{
+  "name": "daylight",
+  "version": "1.0.0",
+  "description": "[![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/) [![Django](https://img.shields.io/badge/django-5.1-green.svg)](https://www.djangoproject.com/) [![React](https://img.shields.io/badge/react-19.2-blue.svg)](https://reactjs.org/) [![GraphQL](https://img.shields.io/badge/graphql-strawberry-ff69b4.svg)](https://strawberry.rocks/) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "npm run test:e2e",
+    "test:e2e": "playwright test --config=tests/e2e/playwright.config.js",
+    "test:e2e:ui": "playwright test --config=tests/e2e/playwright.config.js --ui",
+    "test:e2e:debug": "playwright test --config=tests/e2e/playwright.config.js --debug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmruss2022/daylight-takehome.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rmruss2022/daylight-takehome/issues"
+  },
+  "homepage": "https://github.com/rmruss2022/daylight-takehome#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

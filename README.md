@@ -225,25 +225,57 @@ See [API_DOCS.md](API_DOCS.md) for complete API documentation.
 
 ## 🧪 Testing
 
-### Run All Tests
+### Django Backend Tests
+
+#### Run All Tests
 ```bash
 docker compose exec web pytest
 ```
 
-### Run with Coverage
+#### Run with Coverage
 ```bash
 docker compose exec web pytest --cov=apps --cov-report=html
 ```
 
-### Run Specific Test File
+#### Run Specific Test File
 ```bash
 docker compose exec web pytest tests/test_devices/test_models.py
 ```
 
-### Run with Verbose Output
+#### Run with Verbose Output
 ```bash
 docker compose exec web pytest -v
 ```
+
+### End-to-End Tests
+
+The project includes Playwright E2E tests that verify both the Django and React frontends.
+
+#### Prerequisites
+```bash
+# Install Playwright (from project root)
+npm install
+npx playwright install chromium
+```
+
+#### Run E2E Tests
+```bash
+# Make sure Django (port 8000) and React (port 3000) are running
+docker compose up -d
+
+# Run all E2E tests
+npm run test:e2e
+
+# Run with UI mode (interactive)
+npm run test:e2e:ui
+
+# Run in debug mode
+npm run test:e2e:debug
+```
+
+#### Test Coverage
+- **Django Dashboard**: Login, energy overview, device management, navigation
+- **React Frontend**: JWT authentication, dashboard stats, battery management, protected routes
 
 ## 🛠️ Development
 
