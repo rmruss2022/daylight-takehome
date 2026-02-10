@@ -15,21 +15,33 @@ class IsAuthenticated(BasePermission):
         """Check if user is authenticated via JWT or Django session."""
         context = info.context
         
-        # In Strawberry Django, context is the request object
-        # Handle both cases: context as request directly or context.request
-        request = context if hasattr(context, 'user') else getattr(context, 'request', None)
+        # Get the actual request object from Strawberry context
+        # Strawberry Django wraps the request in a context object
+        if hasattr(context, 'request'):
+            request = context.request
+        elif hasattr(context, '_request'):
+            request = context._request
+        else:
+            # Context IS the request in some cases
+            request = context
+        
         if request is None:
             return False
         
         # Check if user is authenticated via Django session
         if hasattr(request, 'user') and request.user.is_authenticated:
             # Ensure user is set in context for resolver access
-            if not hasattr(context, 'user'):
-                context.user = request.user
+            context.user = request.user
             return True
         
         # Fall back to JWT authentication from Authorization header
-        auth_header = getattr(request, 'headers', {}).get('Authorization', '') or request.META.get('HTTP_AUTHORIZATION', '')
+        # Try to get header from multiple possible locations
+        auth_header = ''
+        if hasattr(request, 'headers') and 'Authorization' in request.headers:
+            auth_header = request.headers.get('Authorization', '')
+        elif hasattr(request, 'META'):
+            auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+        
         if not auth_header.startswith('Bearer '):
             return False
         
