@@ -66,9 +66,12 @@ class SolarPanelSimulator(BaseSimulator):
         declination = 23.45 * math.sin(math.radians((360 / 365) * (day_of_year - 81)))
 
         # Hour angle (0° at solar noon, -15°/hour in morning, +15°/hour in afternoon)
-        # Approximate solar noon at 12:00 + longitude correction
-        solar_noon_offset = longitude / 15.0  # Convert longitude to hours
-        local_solar_time = timestamp.hour + timestamp.minute / 60.0 - solar_noon_offset
+        # Convert UTC to local solar time using longitude
+        # For west longitudes (negative), subtract hours; for east (positive), add hours
+        solar_hour_offset = longitude / 15.0  # Convert longitude to hours
+        local_solar_time = timestamp.hour + timestamp.minute / 60.0 + solar_hour_offset
+        # Normalize to 0-24 hour range
+        local_solar_time = local_solar_time % 24
         hour_angle = 15.0 * (local_solar_time - 12.0)
 
         # Calculate elevation angle

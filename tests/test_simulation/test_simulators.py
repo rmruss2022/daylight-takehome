@@ -15,7 +15,7 @@ from apps.devices.models import EVMode
 class TestSolarPanelSimulator:
     """Test solar panel simulator."""
 
-    @freeze_time("2024-06-21 12:00:00")  # Summer solstice, solar noon
+    @freeze_time("2024-06-21 20:00:00")  # Summer solstice, solar noon in SF (UTC time)
     def test_solar_output_at_noon(self, solar_panel):
         """Test solar output at noon (should be high)."""
         simulator = SolarPanelSimulator(solar_panel)
@@ -25,7 +25,7 @@ class TestSolarPanelSimulator:
         assert result['power_w'] <= solar_panel.max_capacity_w
         assert result['status'] == 'online'
 
-    @freeze_time("2024-06-21 02:00:00")  # Night
+    @freeze_time("2024-06-21 10:00:00")  # Night in SF (UTC time)
     def test_solar_output_at_night(self, solar_panel):
         """Test solar output at night (should be zero)."""
         simulator = SolarPanelSimulator(solar_panel)

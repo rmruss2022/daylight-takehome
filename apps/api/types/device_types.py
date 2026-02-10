@@ -26,6 +26,7 @@ class DeviceInterface:
     id: int
     name: str
     status: DeviceStatusEnum
+    device_type: str
     created_at: datetime
     updated_at: datetime
 

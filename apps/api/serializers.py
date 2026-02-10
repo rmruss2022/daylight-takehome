@@ -57,7 +57,7 @@ class ElectricVehicleSerializer(serializers.ModelSerializer):
                   'max_charge_rate_kw', 'max_discharge_rate_kw', 'mode',
                   'last_seen_at', 'driving_efficiency_kwh_per_hour',
                   'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'device_type', 'charge_percentage']
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at', 'device_type', 'charge_percentage']
 
 
 class SolarPanelSerializer(serializers.ModelSerializer):

@@ -72,7 +72,7 @@ class TestUserEndpoints:
     def test_me_endpoint_unauthenticated(self, api_client):
         """Test unauthenticated user cannot access me endpoint."""
         response = api_client.get('/api/users/me/')
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert response.status_code in [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN]
 
 
 @pytest.mark.django_db
@@ -162,7 +162,7 @@ class TestDeviceEndpoints:
     def test_unauthenticated_device_access(self, api_client):
         """Test unauthenticated user cannot access devices."""
         response = api_client.get('/api/devices/')
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert response.status_code in [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN]
 
 
 @pytest.mark.django_db

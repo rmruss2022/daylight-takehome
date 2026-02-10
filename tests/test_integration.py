@@ -57,7 +57,7 @@ class TestUserRegistrationAndLogin:
         }
         
         login_response = graphql_client.post(
-            '/api/graphql',
+            '/graphql/',
             data=json.dumps({
                 'query': login_query,
                 'variables': login_variables
@@ -84,7 +84,7 @@ class TestUserRegistrationAndLogin:
         """
         
         devices_response = graphql_client.post(
-            '/api/graphql',
+            '/graphql/',
             data=json.dumps({'query': devices_query}),
             content_type='application/json',
             HTTP_AUTHORIZATION=f'Bearer {token}'
@@ -275,7 +275,7 @@ class TestDashboardDataFlow:
         """
         
         devices_response = graphql_client.post(
-            '/api/graphql',
+            '/graphql/',
             data=json.dumps({'query': devices_query}),
             content_type='application/json',
             HTTP_AUTHORIZATION=f'Bearer {token}'
@@ -303,7 +303,7 @@ class TestDashboardDataFlow:
         """
         
         stats_response = graphql_client.post(
-            '/api/graphql',
+            '/graphql/',
             data=json.dumps({'query': stats_query}),
             content_type='application/json',
             HTTP_AUTHORIZATION=f'Bearer {token}'

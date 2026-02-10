@@ -29,7 +29,7 @@ def execute_graphql(client, query, variables=None, headers=None):
     
     extra = headers or {}
     response = client.post(
-        '/api/graphql',
+        '/graphql/',
         data=json.dumps(payload),
         content_type='application/json',
         **extra
