@@ -39,9 +39,12 @@ USER django
 # Expose port
 EXPOSE 8000
 
-# Copy entrypoint script
+# Copy all entrypoint scripts
 COPY --chown=django:django entrypoint.sh /app/
-RUN chmod +x /app/entrypoint.sh
+COPY --chown=django:django smart-entrypoint.sh /app/
+COPY --chown=django:django railway-celery-worker.sh /app/
+COPY --chown=django:django railway-celery-beat.sh /app/
+RUN chmod +x /app/entrypoint.sh /app/smart-entrypoint.sh /app/railway-celery-worker.sh /app/railway-celery-beat.sh
 
 # Default command
-CMD ["/app/entrypoint.sh"]
+CMD ["bash", "/app/smart-entrypoint.sh"]

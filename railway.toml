@@ -1,0 +1,8 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "bash /app/smart-entrypoint.sh"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
