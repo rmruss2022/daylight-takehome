@@ -3,7 +3,8 @@ from .base import *
 DEBUG = False
 
 # Security settings
-SECURE_SSL_REDIRECT = True
+# Railway handles SSL at the proxy level, so no redirect needed
+SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
