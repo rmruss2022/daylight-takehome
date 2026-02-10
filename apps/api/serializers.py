@@ -34,6 +34,7 @@ class BatterySerializer(serializers.ModelSerializer):
     device_type = serializers.CharField(source='get_device_type', read_only=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
     charge_percentage = serializers.FloatField(read_only=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
         model = Battery
@@ -41,7 +42,7 @@ class BatterySerializer(serializers.ModelSerializer):
                   'capacity_kwh', 'current_charge_kwh', 'charge_percentage',
                   'max_charge_rate_kw', 'max_discharge_rate_kw',
                   'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'device_type', 'charge_percentage']
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at', 'device_type', 'charge_percentage']
 
 
 class ElectricVehicleSerializer(serializers.ModelSerializer):
@@ -62,45 +63,49 @@ class ElectricVehicleSerializer(serializers.ModelSerializer):
 class SolarPanelSerializer(serializers.ModelSerializer):
     device_type = serializers.CharField(source='get_device_type', read_only=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
         model = SolarPanel
         fields = ['id', 'user', 'user_username', 'name', 'status', 'device_type',
                   'panel_area_m2', 'efficiency', 'max_capacity_w',
                   'latitude', 'longitude', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'device_type']
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at', 'device_type']
 
 
 class GeneratorSerializer(serializers.ModelSerializer):
     device_type = serializers.CharField(source='get_device_type', read_only=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
         model = Generator
         fields = ['id', 'user', 'user_username', 'name', 'status', 'device_type',
                   'rated_output_w', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'device_type']
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at', 'device_type']
 
 
 class AirConditionerSerializer(serializers.ModelSerializer):
     device_type = serializers.CharField(source='get_device_type', read_only=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
         model = AirConditioner
         fields = ['id', 'user', 'user_username', 'name', 'status', 'device_type',
                   'rated_power_w', 'min_power_w', 'max_power_w',
                   'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'device_type']
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at', 'device_type']
 
 
 class HeaterSerializer(serializers.ModelSerializer):
     device_type = serializers.CharField(source='get_device_type', read_only=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
         model = Heater
         fields = ['id', 'user', 'user_username', 'name', 'status', 'device_type',
                   'rated_power_w', 'min_power_w', 'max_power_w',
                   'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'device_type']
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at', 'device_type']

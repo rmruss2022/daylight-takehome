@@ -1,9 +1,9 @@
 /**
  * Admin Actions Customization
- * STRIPPED: All JavaScript manipulation disabled to reset to base HTML behavior
+ * Removes the empty "None" option from the actions dropdown
+ * and sets "Delete selected" as the default
  */
 
-/*
 (function() {
     'use strict';
     
@@ -48,16 +48,7 @@
         console.log('  Options count:', actionSelect.options.length);
         console.log('  Selected value:', actionSelect.value);
         console.log('  Selected text:', actionSelect.options[actionSelect.selectedIndex]?.text);
-        
-        // Log computed styles for debugging
-        const computed = window.getComputedStyle(actionSelect);
-        console.log('  Text color:', computed.color);
-        console.log('  -webkit-text-fill-color:', computed.webkitTextFillColor);
-        console.log('  Background:', computed.backgroundColor);
     }
     
-    console.log('admin-actions.js loaded');
+    console.log('admin-actions.js loaded and active');
 })();
-*/
-
-console.log('admin-actions.js loaded (all customization disabled)');

@@ -72,6 +72,9 @@ class BatteryViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return Battery.objects.all().select_related('user')
         return Battery.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class ElectricVehicleViewSet(viewsets.ModelViewSet):
@@ -84,6 +87,9 @@ class ElectricVehicleViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return ElectricVehicle.objects.all().select_related('user')
         return ElectricVehicle.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class SolarPanelViewSet(viewsets.ModelViewSet):
@@ -96,6 +102,9 @@ class SolarPanelViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return SolarPanel.objects.all().select_related('user')
         return SolarPanel.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class GeneratorViewSet(viewsets.ModelViewSet):
@@ -108,6 +117,9 @@ class GeneratorViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return Generator.objects.all().select_related('user')
         return Generator.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class AirConditionerViewSet(viewsets.ModelViewSet):
@@ -120,6 +132,9 @@ class AirConditionerViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return AirConditioner.objects.all().select_related('user')
         return AirConditioner.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class HeaterViewSet(viewsets.ModelViewSet):
@@ -132,3 +147,6 @@ class HeaterViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return Heater.objects.all().select_related('user')
         return Heater.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

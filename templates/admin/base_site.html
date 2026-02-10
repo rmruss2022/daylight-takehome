@@ -27,6 +27,7 @@
 {{ block.super }}
 {# Load dark theme last so it overrides Django admin login.css, responsive.css, etc. #}
 <link rel="stylesheet" href="{% static 'css/admin-custom.css' %}">
+<script src="{% static 'js/admin-actions.js' %}" defer></script>
 {% endblock %}
 
 {% block userlinks %}
