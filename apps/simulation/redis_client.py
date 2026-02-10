@@ -11,7 +11,7 @@ class RedisClient:
 
     def __init__(self):
         self.redis = redis.from_url(settings.REDIS_URL, decode_responses=True)
-        self.ttl = 60  # Time-to-live in seconds
+        self.ttl = 86400  # Time-to-live in seconds (24 hours for demo without Celery)
 
     def store_device_data(self, device_id: int, data: Dict[str, Any]):
         """Store current device simulation data."""
