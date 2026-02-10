@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.http import JsonResponse
 from django.conf import settings
 from django.conf.urls.static import static
@@ -26,8 +26,13 @@ urlpatterns = [
     # Admin
     path('admin/', admin_site.urls),
 
-    # API
+    # REST API
+    path('api/', include('apps.api.rest_urls')),
+
+    # GraphQL API
     path('graphql/', GraphQLView.as_view(schema=schema)),
+    
+    # Health Check
     path('health/', health_check),
 ]
 

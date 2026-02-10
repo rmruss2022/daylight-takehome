@@ -134,14 +134,15 @@ class BatteryAdmin(DeviceAdmin):
         """Display charge percentage with visual bar."""
         percentage = obj.charge_percentage
         color = '#00d4ff' if percentage > 20 else '#ff8c42'
+        percentage_str = f'{percentage:.1f}'
         return format_html(
             '<div style="display: flex; align-items: center; gap: 8px; min-width: 200px;">'
             '<div style="flex: 1; height: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden;">'
             '<div style="width: {}%; height: 100%; background: {}; border-radius: 6px; transition: width 0.3s;"></div>'
             '</div>'
-            '<span style="font-family: monospace; font-weight: 600; color: {};">{:.1f}%</span>'
+            '<span style="font-family: monospace; font-weight: 600; color: {};">{}%</span>'
             '</div>',
-            percentage, color, color, percentage
+            percentage, color, color, percentage_str
         )
     charge_bar.short_description = 'Charge Level'
 
@@ -186,14 +187,15 @@ class ElectricVehicleAdmin(DeviceAdmin):
         """Display charge percentage with visual bar."""
         percentage = obj.charge_percentage
         color = '#00d4ff' if percentage > 20 else '#ff8c42'
+        percentage_str = f'{percentage:.1f}'
         return format_html(
             '<div style="display: flex; align-items: center; gap: 8px; min-width: 200px;">'
             '<div style="flex: 1; height: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden;">'
             '<div style="width: {}%; height: 100%; background: {}; border-radius: 6px; transition: width 0.3s;"></div>'
             '</div>'
-            '<span style="font-family: monospace; font-weight: 600; color: {};">{:.1f}%</span>'
+            '<span style="font-family: monospace; font-weight: 600; color: {};">{}%</span>'
             '</div>',
-            percentage, color, color, percentage
+            percentage, color, color, percentage_str
         )
     charge_bar.short_description = 'Charge Level'
 
@@ -232,6 +234,22 @@ class HeaterAdmin(DeviceAdmin):
     )
 
 
+class CustomUserAdmin(UserAdmin):
+    """Custom User admin with simplified action dropdown for debugging."""
+    
+    def changelist_view(self, request, extra_context=None):
+        """Override changelist to customize action dropdown."""
+        extra_context = extra_context or {}
+        extra_context['default_action'] = 'delete_selected'
+        return super().changelist_view(request, extra_context)
+    
+    class Media:
+        css = {
+            'all': ('css/admin-custom.css',)
+        }
+        js = ('js/admin-actions.js',)
+
+
 # Register all models to the custom admin site
 admin_site.register(SolarPanel, SolarPanelAdmin)
 admin_site.register(Generator, GeneratorAdmin)
@@ -241,6 +259,6 @@ admin_site.register(AirConditioner, AirConditionerAdmin)
 admin_site.register(Heater, HeaterAdmin)
 admin_site.register(Device, DeviceAdmin)
 
-# Register Django built-in models
-admin_site.register(User, UserAdmin)
+# Register Django built-in models with custom admins
+admin_site.register(User, CustomUserAdmin)
 admin_site.register(Group, GroupAdmin)

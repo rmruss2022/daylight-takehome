@@ -290,7 +290,7 @@ input[type="number"],
 input[type="date"],
 input[type="time"],
 input[type="datetime-local"],
-select,
+/* select, */  /* STRIPPED: Reset to base HTML */
 textarea {
   background: rgba(255, 255, 255, 0.05) !important;
   border: var(--border-width) solid var(--glass-border) !important;
@@ -309,7 +309,7 @@ input[type="number"]:focus,
 input[type="date"]:focus,
 input[type="time"]:focus,
 input[type="datetime-local"]:focus,
-select:focus,
+/* select:focus, */  /* STRIPPED: Reset to base HTML */
 textarea:focus {
   background: rgba(255, 255, 255, 0.08) !important;
   border-color: var(--color-energy-storage) !important;
@@ -585,36 +585,58 @@ input[type="submit"].default:hover,
   color: var(--color-silver) !important;
 }
 
+/* STRIPPED: All select styling removed to reset to base HTML */
+/*
 .actions select {
   margin: 0 var(--space-4) !important;
 }
 
-/* Action dropdown: force visible selected text in closed state */
 #changelist .actions select[name="action"],
-#changelist-form .actions select[name="action"] {
+#changelist-form .actions select[name="action"],
+.actions select[name="action"],
+select[name="action"] {
   background: rgba(10, 14, 39, 0.9) !important;
-  color: var(--color-ice) !important;
-  -webkit-text-fill-color: var(--color-ice) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  -moz-text-fill-color: #ffffff !important;
   font-weight: var(--weight-semibold) !important;
-  text-shadow: 0 0 0 var(--color-ice) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
 }
 
-/* Action dropdown options: readable in all states */
+#changelist .actions select[name="action"] *,
+#changelist-form .actions select[name="action"] *,
+.actions select[name="action"] *,
+select[name="action"] * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  -moz-text-fill-color: #ffffff !important;
+}
+
 #changelist .actions select[name="action"] option,
-#changelist-form .actions select[name="action"] option {
+#changelist-form .actions select[name="action"] option,
+.actions select[name="action"] option,
+select[name="action"] option {
   background: var(--color-deep-navy) !important;
-  color: var(--color-ice) !important;
-  -webkit-text-fill-color: var(--color-ice) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  -moz-text-fill-color: #ffffff !important;
 }
 
 #changelist .actions select[name="action"] option:checked,
 #changelist .actions select[name="action"] option:selected,
 #changelist-form .actions select[name="action"] option:checked,
-#changelist-form .actions select[name="action"] option:selected {
+#changelist-form .actions select[name="action"] option:selected,
+.actions select[name="action"] option:checked,
+.actions select[name="action"] option:selected,
+select[name="action"] option:checked,
+select[name="action"] option:selected {
   background: #1f2a4f !important;
-  color: var(--color-white) !important;
-  -webkit-text-fill-color: var(--color-white) !important;
+  color: #3dd5f3 !important;
+  -webkit-text-fill-color: #3dd5f3 !important;
+  -moz-text-fill-color: #3dd5f3 !important;
 }
+*/
 
 /* Center "Go" button text in action bar */
 .actions button,
@@ -771,27 +793,29 @@ td:has(.field-get_device_type) {
   border-left: 3px solid var(--color-energy-storage) !important;
 }
 
-/* Make sidebar navigation items fully clickable */
+/* Make sidebar navigation items clickable (fixed positioning) */
 #nav-sidebar li {
   position: relative;
+  min-height: 40px; /* Ensure clickable area */
 }
 
 #nav-sidebar li a[href]:not(.addlink) {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  z-index: 1 !important;
+  display: block !important;
+  width: 100% !important;
   padding: var(--space-3) var(--space-4) !important;
+  text-decoration: none !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 #nav-sidebar .addlink {
-  position: relative !important;
+  position: absolute !important;
+  right: var(--space-2) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
   z-index: 2 !important;
-  float: right !important;
-  margin-top: var(--space-2) !important;
-  margin-right: var(--space-2) !important;
+  padding: var(--space-1) var(--space-3) !important;
+  font-size: var(--text-xs) !important;
 }
 
 #toggle-nav-sidebar {
@@ -873,7 +897,8 @@ div.breadcrumbs + * {
 
 /* ========== Select Options ========== */
 
-/* All dropdown options: light text on dark so nothing blends (Delete, etc.) */
+/* STRIPPED: All select styling removed to reset to base HTML */
+/*
 select {
   color: var(--color-white) !important;
   -webkit-text-fill-color: var(--color-white) !important;
@@ -887,6 +912,7 @@ select option:focus {
   background: var(--color-deep-navy) !important;
   color: var(--color-white) !important;
 }
+*/
 
 /* ========== Aligned Fields ========== */
 
