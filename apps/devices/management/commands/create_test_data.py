@@ -64,6 +64,7 @@ class Command(BaseCommand):
                 'capacity_kwh': 75.0,
                 'current_charge_kwh': 64.5,
                 'max_charge_rate_kw': 11.0,
+                'max_discharge_rate_kw': 11.0,  # V2H capability
                 'driving_efficiency_kwh_per_hour': 15.0,
                 'status': 'online',
                 'mode': 'offline'
