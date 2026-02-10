@@ -816,8 +816,14 @@ body.main #nav-sidebar {
   z-index: 1 !important;
 }
 
-/* Show only the first Add button, hide any duplicates */
+/* Fix duplicate Add buttons - hide all first, then show only the first one per item */
 #nav-sidebar .addlink {
+  display: none !important;
+}
+
+/* Show and style only the first addlink per list item */
+#nav-sidebar li .addlink:first-of-type {
+  display: inline-block !important;
   position: absolute !important;
   right: var(--space-2) !important;
   top: 50% !important;
@@ -825,10 +831,18 @@ body.main #nav-sidebar {
   z-index: 2 !important;
   padding: var(--space-1) var(--space-3) !important;
   font-size: var(--text-xs) !important;
+  background: var(--gradient-production) !important;
+  color: var(--color-void) !important;
+  border-radius: var(--radius-lg) !important;
+  text-decoration: none !important;
+  font-weight: var(--weight-semibold) !important;
+  transition: all var(--transition-base);
 }
 
-#nav-sidebar .addlink ~ .addlink {
-  display: none !important;
+/* Hover effect for the single Add button */
+#nav-sidebar li .addlink:first-of-type:hover {
+  transform: translateY(-50%) translateY(-2px) !important;
+  box-shadow: var(--shadow-lg), var(--shadow-glow-production) !important;
 }
 
 #toggle-nav-sidebar {
