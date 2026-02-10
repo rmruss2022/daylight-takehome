@@ -38,5 +38,9 @@ USER django
 # Expose port
 EXPOSE 8000
 
+# Copy entrypoint script
+COPY --chown=django:django entrypoint.sh /app/
+RUN chmod +x /app/entrypoint.sh
+
 # Default command
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["/app/entrypoint.sh"]

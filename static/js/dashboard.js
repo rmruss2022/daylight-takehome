@@ -288,12 +288,19 @@ function renderDevices(devices) {
     const icon = getDeviceIconFromTypename(typename);
     const specs = getDeviceSpecs(device);
 
+    // DEBUG: For EVs, show raw data
+    let debugInfo = '';
+    if (typename === 'ElectricVehicleType') {
+      debugInfo = `<div style="font-size: 10px; color: #666; margin-top: 4px;">DEBUG: status=${device.status}, mode=${device.mode}, hasMode=${!!device.mode}</div>`;
+    }
+
     return `
       <div class="device-card ${deviceType}" data-device-id="${device.id}">
         <div class="device-card-header">
           <div class="device-info">
             <h3 class="device-name">${device.name}</h3>
             <div class="device-type">${formatTypename(typename)}</div>
+            ${debugInfo}
           </div>
           <div class="device-icon ${deviceType.toLowerCase()}">${icon}</div>
         </div>
@@ -309,26 +316,23 @@ function renderDevices(devices) {
 
         <div style="margin-top: var(--space-4);">
           ${(() => {
-            // DEBUG: Log device data for EVs
-            if (typename === 'ElectricVehicleType') {
-              console.log(`EV ${device.name}: status=${device.status}, mode=${device.mode}`);
-            }
-            
             // For EVs, ONLY show mode badge (never show status)
+            // GraphQL returns uppercase enum keys: CHARGING, DISCHARGING, OFFLINE
             if (device.mode) {
-              const mode = device.mode.toLowerCase();
-              if (mode === 'charging') {
+              const mode = String(device.mode).toUpperCase();
+              if (mode === 'CHARGING') {
                 return '<span class="badge badge-online"><span class="badge-dot"></span> Charging</span>';
-              } else if (mode === 'discharging') {
+              } else if (mode === 'DISCHARGING') {
                 return '<span class="badge badge-online"><span class="badge-dot"></span> Discharging</span>';
               } else {
-                // offline mode - show Disconnected
+                // OFFLINE mode - EV is disconnected/driving (7AM-6PM weekdays)
                 return '<span class="badge badge-offline"><span class="badge-dot"></span> Disconnected</span>';
               }
             }
             
             // For non-EVs, show status badge
-            if (device.status && device.status.toLowerCase() === 'online') {
+            const status = String(device.status).toUpperCase();
+            if (status === 'ONLINE') {
               return '<span class="badge badge-online"><span class="badge-dot"></span> Online</span>';
             } else {
               return '<span class="badge badge-offline"><span class="badge-dot"></span> Offline</span>';
