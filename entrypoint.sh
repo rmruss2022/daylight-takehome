@@ -15,7 +15,7 @@ echo "Database is up - executing migrations"
 # Run migrations
 python manage.py migrate --noinput
 
-# Create superuser if it doesn't exist
+# Create or update superuser
 python manage.py shell << END
 from django.contrib.auth import get_user_model
 import os
@@ -25,11 +25,14 @@ username = os.getenv('DJANGO_SUPERUSER_USERNAME', 'admin')
 email = os.getenv('DJANGO_SUPERUSER_EMAIL', 'admin@example.com')
 password = os.getenv('DJANGO_SUPERUSER_PASSWORD', 'admin')
 
-if not User.objects.filter(username=username).exists():
+try:
+    admin_user = User.objects.get(username=username)
+    admin_user.set_password(password)
+    admin_user.save()
+    print(f'Superuser {username} password updated.')
+except User.DoesNotExist:
     User.objects.create_superuser(username, email, password)
     print(f'Superuser {username} created successfully!')
-else:
-    print(f'Superuser {username} already exists.')
 END
 
 # Collect static files
