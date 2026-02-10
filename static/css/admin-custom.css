@@ -958,23 +958,9 @@ select option:focus {
 
 /* ========== Object Tools (Action Buttons) ========== */
 
+/* Hide Add buttons in top right (above filters) - we have them in left sidebar already */
 .object-tools {
-  background: transparent !important;
-}
-
-.object-tools li {
-  background: var(--gradient-card) !important;
-  border-radius: var(--radius-lg) !important;
-}
-
-.object-tools a {
-  background: transparent !important;
-  border-color: var(--glass-border) !important;
-}
-
-.object-tools a:hover {
-  background: rgba(0, 212, 255, 0.1) !important;
-  border-color: var(--color-energy-storage) !important;
+  display: none !important;
 }
 
 /* ========== Change Form ========== */
