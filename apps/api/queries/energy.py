@@ -36,9 +36,9 @@ class EnergyQuery:
             current_production=stats['current_production'],
             current_consumption=stats['current_consumption'],
             current_storage=CurrentStorageType(
-                total_capacity_wh=stats['storage']['total_capacity_wh'],
-                current_level_wh=stats['storage']['current_level_wh'],
-                percentage=stats['storage']['percentage']
+                total_capacity_wh=stats['current_storage']['total_capacity_wh'],
+                current_level_wh=stats['current_storage']['current_level_wh'],
+                percentage=stats['current_storage']['percentage']
             ),
             current_storage_flow=stats['current_storage_flow'],
             net_grid_flow=stats['net_grid_flow']
