@@ -31,8 +31,14 @@ class EVSimulator(BaseSimulator):
             }
 
         # Determine if EV should be connected based on schedule
-        is_weekday = timestamp.weekday() < 5  # Monday = 0, Friday = 4
-        hour = timestamp.hour
+        # Convert UTC to EST for schedule check (spec defines schedule in EST)
+        from datetime import timedelta
+        # EST is UTC-5 (or UTC-4 during DST, but using UTC-5 for consistency)
+        est_offset = timedelta(hours=-5)
+        timestamp_est = timestamp + est_offset
+        
+        is_weekday = timestamp_est.weekday() < 5  # Monday = 0, Friday = 4
+        hour = timestamp_est.hour
         should_be_away = is_weekday and 7 <= hour < 18
 
         current_charge_kwh = self.device.current_charge_kwh
