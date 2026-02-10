@@ -816,6 +816,7 @@ body.main #nav-sidebar {
   z-index: 1 !important;
 }
 
+/* Show only the first Add button, hide any duplicates */
 #nav-sidebar .addlink {
   position: absolute !important;
   right: var(--space-2) !important;
@@ -824,6 +825,10 @@ body.main #nav-sidebar {
   z-index: 2 !important;
   padding: var(--space-1) var(--space-3) !important;
   font-size: var(--text-xs) !important;
+}
+
+#nav-sidebar .addlink ~ .addlink {
+  display: none !important;
 }
 
 #toggle-nav-sidebar {
