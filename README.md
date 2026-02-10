@@ -1,354 +1,479 @@
-# Smart Home Energy Management System
+# Daylight Energy Management System
 
-A Dockerized Django GraphQL API backend for managing smart home energy devices with real-time energy statistics and simulation.
+[![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
+[![Django](https://img.shields.io/badge/django-5.1-green.svg)](https://www.djangoproject.com/)
+[![React](https://img.shields.io/badge/react-19.2-blue.svg)](https://reactjs.org/)
+[![GraphQL](https://img.shields.io/badge/graphql-strawberry-ff69b4.svg)](https://strawberry.rocks/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## Features
+A comprehensive smart home energy management system with real-time monitoring, device simulation, and dual API support (GraphQL + REST). Built with Django, React, and Docker for production-ready deployment.
 
-- **Device Management**: Solar panels, generators, batteries, electric vehicles, air conditioners, and heaters
-- **Real-time Energy Statistics**: Production, consumption, storage, and grid flow monitoring
-- **Realistic Simulation**: Celery-powered background tasks simulate device behavior
-- **GraphQL API**: Modern API with Strawberry GraphQL
-- **JWT Authentication**: Secure user authentication
-- **Django Admin**: Full admin interface for device management
+## 🌟 Features
 
-## Quick Start
+### Core Capabilities
+- **Multi-Device Support**: Solar panels, batteries, EVs, generators, air conditioners, and heaters
+- **Real-Time Monitoring**: Live energy production, consumption, storage, and grid flow statistics
+- **Realistic Simulation**: Celery-powered background tasks with time-based behavior patterns
+- **Dual API Architecture**: GraphQL (Strawberry) and REST API (Django REST Framework)
+- **Modern Frontend**: React + TypeScript + TailwindCSS dashboard
+- **JWT Authentication**: Secure token-based authentication for both APIs
+- **Admin Interface**: Enhanced Django admin with custom actions and dark theme
 
-**For detailed step-by-step instructions, see [QUICKSTART.md](QUICKSTART.md)**
+### Device Types
+
+#### Production Devices
+- **Solar Panels**: Solar elevation angle calculations, location-based generation
+- **Generators**: Steady power output with realistic variation
+
+#### Storage Devices
+- **Batteries**: Intelligent charge/discharge logic with C-rate limiting
+- **Electric Vehicles**: Schedule-based availability (commute simulation), V2H support
+
+#### Consumption Devices
+- **Air Conditioners**: Variable power consumption
+- **Heaters**: Adjustable power draw
+
+## 📐 Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         Client Layer                             │
+│  ┌──────────────────┐  ┌─────────────────┐  ┌─────────────────┐│
+│  │  React Frontend  │  │  GraphQL Client │  │   REST Client   ││
+│  │  (Port 3000)     │  │  (Playground)   │  │   (API Tools)   ││
+│  └──────────────────┘  └─────────────────┘  └─────────────────┘│
+└───────────────────────────────┬─────────────────────────────────┘
+                                │
+┌───────────────────────────────┼─────────────────────────────────┐
+│                         API Layer                                │
+│  ┌──────────────────┐  ┌─────────────────┐  ┌─────────────────┐│
+│  │   Django Views   │  │  GraphQL Schema │  │  REST ViewSets  ││
+│  │   (Dashboard)    │  │   (Strawberry)  │  │      (DRF)      ││
+│  └──────────────────┘  └─────────────────┘  └─────────────────┘│
+│                                │                                 │
+│  ┌────────────────────────────┴──────────────────────────────┐ │
+│  │               JWT Authentication & Permissions              │ │
+│  └────────────────────────────┬──────────────────────────────┘ │
+└───────────────────────────────┼─────────────────────────────────┘
+                                │
+┌───────────────────────────────┼─────────────────────────────────┐
+│                      Business Logic Layer                        │
+│  ┌────────────────────────────┴──────────────────────────────┐ │
+│  │                      Django Models                          │ │
+│  │  Device (Base) → SolarPanel, Battery, EV, Generator, etc.  │ │
+│  └────────────────────────────┬──────────────────────────────┘ │
+└───────────────────────────────┼─────────────────────────────────┘
+                                │
+┌───────────────────────────────┼─────────────────────────────────┐
+│                     Simulation & Cache Layer                     │
+│  ┌─────────────────┐  ┌──────┴──────┐  ┌────────────────────┐ │
+│  │  Celery Beat    │→ │   Celery    │→ │  Redis Cache       │ │
+│  │  (Scheduler)    │  │   Worker    │  │  (Real-time Data)  │ │
+│  │  60s interval   │  │  Simulators │  │  60s TTL           │ │
+│  └─────────────────┘  └─────────────┘  └────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+                                │
+┌───────────────────────────────┼─────────────────────────────────┐
+│                        Data Layer                                │
+│  ┌────────────────────────────┴──────────────────────────────┐ │
+│  │                    PostgreSQL Database                      │ │
+│  │         (Persistent device configuration & state)          │ │
+│  └─────────────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Data Flow
+
+1. **Celery Beat** triggers simulation every 60 seconds
+2. **Orchestrator** spawns parallel tasks for each device
+3. **Device Simulators** calculate realistic energy values
+4. **Redis** stores current state with 60-second TTL
+5. **API Layer** aggregates and serves data to clients
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Docker and Docker Compose
-- Git
+- **Docker Desktop** (with Docker Compose)
+- **Git**
+- **Node.js 18+** (for local frontend development)
+- At least **4GB RAM** available
 
-### Installation (Using Makefile)
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd Daylight
+   ```
+
+2. **Copy environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration (optional for development)
+   ```
+
+3. **Start all services**
+   ```bash
+   docker compose up --build
+   ```
+
+   This starts:
+   - `web`: Django application (port 8000)
+   - `frontend`: React application (port 3000)
+   - `db`: PostgreSQL database (port 5432)
+   - `redis`: Redis cache (port 6379)
+   - `celery`: Background worker
+   - `celery-beat`: Task scheduler
+
+4. **Initialize database** (in a new terminal)
+   ```bash
+   # Run migrations
+   docker compose exec web python manage.py migrate
+
+   # Create admin user
+   docker compose exec web python manage.py createsuperuser
+
+   # (Optional) Load sample data
+   docker compose exec web python manage.py seed_devices
+   ```
+
+### Access Points
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| React Frontend | http://localhost:3000 | Modern dashboard UI |
+| Django Dashboard | http://localhost:8000 | Server-rendered dashboard |
+| Django Admin | http://localhost:8000/admin | Admin interface |
+| GraphQL Playground | http://localhost:8000/graphql | Interactive GraphQL API |
+| REST API | http://localhost:8000/api | RESTful endpoints |
+| Health Check | http://localhost:8000/health | Service health status |
+
+## 📖 Usage Guide
+
+### React Frontend (Recommended)
+
+1. Navigate to http://localhost:3000
+2. Login with your credentials
+3. View real-time energy statistics
+4. Monitor device status and performance
+5. View energy production, consumption, and storage
+
+### GraphQL API
+
+1. **Get JWT Token**
+   ```graphql
+   mutation {
+     loginUser(username: "testuser1", password: "testpass123") {
+       token
+       user {
+         id
+         username
+       }
+     }
+   }
+   ```
+
+2. **Set Authorization Header**
+   ```json
+   {
+     "Authorization": "Bearer YOUR_TOKEN_HERE"
+   }
+   ```
+
+3. **Query Energy Stats**
+   ```graphql
+   query {
+     energyStats {
+       currentProduction
+       currentConsumption
+       currentStorage {
+         totalCapacityWh
+         currentLevelWh
+         percentage
+       }
+       currentStorageFlow
+       netGridFlow
+     }
+   }
+   ```
+
+### REST API
+
+1. **Obtain Token**
+   ```bash
+   curl -X POST http://localhost:8000/api/auth/token/ \
+     -H "Content-Type: application/json" \
+     -d '{"username": "testuser1", "password": "testpass123"}'
+   ```
+
+2. **List Devices**
+   ```bash
+   curl http://localhost:8000/api/devices/ \
+     -H "Authorization: Bearer YOUR_TOKEN_HERE"
+   ```
+
+See [API_DOCS.md](API_DOCS.md) for complete API documentation.
+
+### Django Admin
+
+1. Navigate to http://localhost:8000/admin
+2. Login with superuser credentials
+3. Manage devices, users, and configurations
+4. Use bulk actions (activate, deactivate, delete)
+5. Filter by device type, status, and user
+
+## 🧪 Testing
+
+### Run All Tests
+```bash
+docker compose exec web pytest
+```
+
+### Run with Coverage
+```bash
+docker compose exec web pytest --cov=apps --cov-report=html
+```
+
+### Run Specific Test File
+```bash
+docker compose exec web pytest tests/test_devices/test_models.py
+```
+
+### Run with Verbose Output
+```bash
+docker compose exec web pytest -v
+```
+
+## 🛠️ Development
+
+### Project Structure
+```
+Daylight/
+├── apps/
+│   ├── api/              # GraphQL & REST API
+│   │   ├── mutations/    # GraphQL mutations
+│   │   ├── queries/      # GraphQL queries
+│   │   ├── types/        # GraphQL types
+│   │   ├── rest_views.py # REST viewsets
+│   │   └── serializers.py
+│   ├── devices/          # Device models & admin
+│   │   ├── models/       # Device models
+│   │   ├── admin.py      # Admin configuration
+│   │   └── views.py      # Dashboard views
+│   └── simulation/       # Celery tasks
+│       ├── simulators/   # Device simulators
+│       └── tasks.py      # Celery tasks
+├── config/               # Django configuration
+│   ├── settings/         # Split settings
+│   ├── urls.py          # URL routing
+│   └── celery.py        # Celery configuration
+├── frontend/             # React application
+│   └── src/
+│       ├── components/   # React components
+│       ├── pages/        # Page components
+│       ├── api/          # API client
+│       └── context/      # React context
+├── tests/                # Test suite
+├── docker-compose.yml    # Service orchestration
+└── Dockerfile           # Container definition
+```
+
+### Environment Variables
+
+Key variables (see `.env.example` for complete list):
 
 ```bash
-# First time setup
-make setup
+# Django
+DEBUG=True
+SECRET_KEY=your-secret-key-here
 
-# Create admin user
-make createsuperuser
+# Database
+POSTGRES_DB=smart_home_energy
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
 
-# Load sample data
-make seed
+# Redis
+REDIS_URL=redis://redis:6379/0
 
-# Visit http://localhost:8000/graphql
+# JWT
+JWT_SECRET_KEY=your-jwt-secret-key
+JWT_EXPIRY_HOURS=24
 ```
 
-### Installation (Manual)
+### Local Development Workflow
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd Daylight
-```
-
-2. Copy environment variables:
-```bash
-cp .env.example .env
-```
-
-3. Build and start services:
-```bash
-docker-compose up --build
-```
-
-This will start:
-- `web`: Django application (port 8000)
-- `db`: PostgreSQL database (port 5432)
-- `redis`: Redis cache (port 6379)
-- `celery`: Celery worker
-- `celery-beat`: Celery scheduler (runs simulation every 60s)
-
-4. In a new terminal, run migrations:
-```bash
-docker-compose exec web python manage.py migrate
-```
-
-5. Create a superuser:
-```bash
-docker-compose exec web python manage.py createsuperuser
-```
-
-6. (Optional) Seed test data:
-```bash
-docker-compose exec web python manage.py seed_devices
-```
-
-This creates two test users with sample devices:
-- Username: `testuser1`, Password: `testpass123`
-- Username: `testuser2`, Password: `testpass123`
-
-### Access the Application
-
-- **GraphQL Playground**: http://localhost:8000/graphql
-- **Django Admin**: http://localhost:8000/admin
-- **Health Check**: http://localhost:8000/health
-
-## API Usage
-
-### Authentication
-
-First, obtain a JWT token:
-
-```graphql
-mutation Login {
-  loginUser(username: "testuser1", password: "testpass123") {
-    token
-    user {
-      id
-      username
-      email
-    }
-  }
-}
-```
-
-Add the token to subsequent requests in the `Authorization` header:
-```
-Authorization: Bearer <your-token-here>
-```
-
-### Query All Devices
-
-```graphql
-query GetDevices {
-  allDevices {
-    ... on SolarPanelType {
-      id
-      name
-      status
-      panelAreaM2
-      efficiency
-      maxCapacityW
-    }
-    ... on BatteryType {
-      id
-      name
-      status
-      capacityKwh
-      currentChargeKwh
-      chargePercentage
-    }
-    ... on ElectricVehicleType {
-      id
-      name
-      status
-      mode
-      capacityKwh
-      currentChargeKwh
-      chargePercentage
-    }
-  }
-}
-```
-
-### Get Energy Statistics
-
-```graphql
-query GetEnergyStats {
-  energyStats {
-    currentProduction
-    currentConsumption
-    currentStorage {
-      totalCapacityWh
-      currentLevelWh
-      percentage
-    }
-    currentStorageFlow
-    netGridFlow
-  }
-}
-```
-
-### Create a Device
-
-```graphql
-mutation CreateSolarPanel {
-  createDevice(input: {
-    name: "Rooftop Solar"
-    deviceType: SOLAR_PANEL
-    panelAreaM2: 20.0
-    efficiency: 0.20
-    maxCapacityW: 4000.0
-    latitude: 37.77
-    longitude: -122.42
-  }) {
-    ... on SolarPanelType {
-      id
-      name
-      maxCapacityW
-    }
-  }
-}
-```
-
-### Update a Device
-
-```graphql
-mutation UpdateDevice {
-  updateDevice(id: 1, input: {
-    name: "Updated Name"
-    status: OFFLINE
-  }) {
-    ... on SolarPanelType {
-      id
-      name
-      status
-    }
-  }
-}
-```
-
-## System Architecture
-
-### Data Model
-
-The system uses Django's Multi-Table Inheritance with a base `Device` model and specialized models for each device type:
-
-- **Production**: `SolarPanel`, `Generator`
-- **Storage**: `Battery`, `ElectricVehicle`
-- **Consumption**: `AirConditioner`, `Heater`
-
-Electric Vehicles have dual functionality (charging/discharging) managed through a `mode` field.
-
-### Simulation Pipeline
-
-1. **Celery Beat** triggers `run_energy_simulation` every 60 seconds
-2. **Orchestrator** spawns `simulate_device` task for each device
-3. **Simulators** compute realistic energy values:
-   - Solar panels: Solar elevation angle based on time/location
-   - Generators: Steady output with ±5% variation
-   - Batteries: Charge/discharge with C-rate limits
-   - EVs: Connection schedule (away 7 AM - 6 PM weekdays)
-   - Consumption: Variable wattage within min/max range
-4. **Results** stored in Redis with 60s TTL
-5. **Aggregator** computes user-level statistics
-6. **GraphQL** `energyStats` query reads from Redis
-
-### Redis Key Schema
-
-```
-device:{device_id}:current       # Device power output/consumption
-device:{device_id}:storage       # Storage device state
-device:{device_id}:last_seen     # EV offline tracking
-user:{user_id}:energy_stats      # Aggregated user statistics
-```
-
-## Development
-
-### Running Tests
-
-```bash
-docker-compose exec web pytest
-```
-
-With coverage:
-```bash
-docker-compose exec web pytest --cov=apps --cov-report=html
-```
+1. **Make code changes** (files are mounted as volumes)
+2. **Restart service**
+   ```bash
+   docker compose restart web
+   ```
+3. **View logs**
+   ```bash
+   docker compose logs -f web
+   ```
+4. **Run tests**
+   ```bash
+   docker compose exec web pytest
+   ```
 
 ### Database Management
 
-Reset database:
+**Reset Database**
 ```bash
-docker-compose down -v
-docker-compose up -d db
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py createsuperuser
+docker compose down -v
+docker compose up -d db
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py createsuperuser
 ```
 
-### Accessing Services
-
-Django shell:
+**Django Shell**
 ```bash
-docker-compose exec web python manage.py shell
+docker compose exec web python manage.py shell
 ```
 
-Redis CLI:
+**PostgreSQL Access**
 ```bash
-docker-compose exec redis redis-cli
+docker compose exec db psql -U postgres -d smart_home_energy
 ```
 
-PostgreSQL:
+### Redis Debugging
+
+**Redis CLI**
 ```bash
-docker-compose exec db psql -U postgres -d smart_home_energy
+docker compose exec redis redis-cli
 ```
 
-View Celery logs:
+**View Keys**
 ```bash
-docker-compose logs -f celery
-docker-compose logs -f celery-beat
+docker compose exec redis redis-cli KEYS "user:*"
 ```
 
-## Environment Variables
+**Get Energy Stats**
+```bash
+docker compose exec redis redis-cli GET "user:1:energy_stats"
+```
 
-See `.env.example` for all available configuration options.
+## 🔧 Simulation Details
 
-Key variables:
-- `SECRET_KEY`: Django secret key
-- `DEBUG`: Enable/disable debug mode
-- `POSTGRES_*`: Database configuration
-- `REDIS_URL`: Redis connection URL
-- `JWT_SECRET_KEY`: JWT signing key
-- `JWT_EXPIRY_HOURS`: Token expiration time
-
-## Device Specifications
-
-### Solar Panel
-- Uses solar elevation angle calculation
+### Solar Panel Simulation
+- Uses solar elevation angle based on time and location
 - Clear-sky irradiance model
-- Default location: San Francisco (37.77°N, 122.42°W)
+- Random cloud cover (85-100%)
 - Zero output at night
-- Random cloud cover variation (85-100%)
+- Default location: San Francisco (37.77°N, 122.42°W)
 
-### Electric Vehicle
-- **Away Schedule**: 7 AM - 6 PM on weekdays
-- **Driving Consumption**: 3 kWh/hour (configurable)
-- **Charge Target**: 90% capacity
-- **Modes**: Charging, Discharging, Offline
+### Electric Vehicle Schedule
+- **Weekdays 7 AM - 6 PM**: Offline (driving)
+- **Weekday evenings/nights**: Home, charging
+- **Weekends**: Always home
+- Driving consumption: 3 kWh/hour (configurable)
+- Charge target: 90% capacity
 
-### Battery
-- **Charge Logic**: Charge if below 50%
-- **Discharge Logic**: Discharge if above 70%
+### Battery Logic
+- **Charge**: When below 50% capacity
+- **Discharge**: When above 70% capacity
 - **Idle**: Between 50-70%
+- Respects C-rate limits (charge/discharge rates)
 
-## Troubleshooting
+### Redis Key Schema
+```
+device:{device_id}:current       # Current power (W)
+device:{device_id}:storage       # Storage state (kWh, %)
+device:{device_id}:last_seen     # EV last seen timestamp
+user:{user_id}:energy_stats      # Aggregated stats
+```
 
-### Simulation not running
+## 🚢 Deployment
 
-Check Celery Beat is running:
+### Production Considerations
+
+1. **Environment Variables**
+   - Set `DEBUG=False`
+   - Use strong `SECRET_KEY` and `JWT_SECRET_KEY`
+   - Configure `ALLOWED_HOSTS`
+
+2. **Database**
+   - Use managed PostgreSQL (AWS RDS, Google Cloud SQL)
+   - Enable backups and replication
+
+3. **Redis**
+   - Use managed Redis (AWS ElastiCache, Redis Cloud)
+   - Configure persistence if needed
+
+4. **Static Files**
+   ```bash
+   python manage.py collectstatic --no-input
+   ```
+   - Serve with Nginx or CDN
+
+5. **WSGI Server**
+   - Replace `runserver` with Gunicorn or uWSGI
+   - Example: `gunicorn config.wsgi:application --bind 0.0.0.0:8000`
+
+6. **Monitoring**
+   - Use health check endpoint: `/health`
+   - Monitor Celery worker/beat status
+   - Track Redis memory usage
+
+## 📚 Additional Documentation
+
+- [API Documentation](API_DOCS.md) - Complete API reference
+- [Changelog](CHANGELOG.md) - Version history and changes
+- [Contributing Guide](CONTRIBUTING.md) - Development guidelines
+- [Quick Start Guide](QUICKSTART.md) - Simplified setup instructions
+
+## 🐛 Troubleshooting
+
+### No Energy Statistics
+
+**Problem**: GraphQL/API returns zeros for all values.
+
+**Solution**: Wait 60 seconds for first simulation cycle. Check logs:
 ```bash
-docker-compose logs celery-beat
+docker compose logs celery-beat | grep "run-energy-simulation"
 ```
 
-Manually trigger simulation:
+### Simulation Not Running
+
+**Problem**: Values don't update over time.
+
+**Solution**: Verify Celery Beat is running:
 ```bash
-docker-compose exec web python manage.py shell
->>> from apps.simulation.tasks import run_energy_simulation
->>> run_energy_simulation.delay()
+docker compose ps
+docker compose restart celery-beat
 ```
 
-### No energy stats returned
+### Permission Errors
 
-Wait at least 60 seconds after starting for first simulation to run, or check Redis:
-```bash
-docker-compose exec redis redis-cli
-127.0.0.1:6379> KEYS user:*
-127.0.0.1:6379> GET user:1:energy_stats
+**Problem**: "Authentication credentials not provided"
+
+**Solution**: Ensure JWT token is in Authorization header:
+```
+Authorization: Bearer YOUR_TOKEN_HERE
 ```
 
-### GraphQL permission errors
+### Port Already in Use
 
-Ensure you're sending the JWT token in the Authorization header:
-```
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...
-```
+**Problem**: Cannot start service, port conflict.
 
-## Design Documentation
+**Solution**: Stop conflicting process or change port in `docker-compose.yml`.
 
-See [DESIGN.md](DESIGN.md) for detailed architecture decisions, scaling considerations, and implementation rationale.
+## 🤝 Contributing
 
-## License
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 
-This project is a technical assessment implementation.
+## 📝 License
+
+This project is a technical assessment implementation for Daylight.
+
+## 🙏 Acknowledgments
+
+Built with:
+- [Django](https://www.djangoproject.com/) - Web framework
+- [Strawberry GraphQL](https://strawberry.rocks/) - GraphQL library
+- [Django REST Framework](https://www.django-rest-framework.org/) - REST API
+- [React](https://reactjs.org/) - Frontend framework
+- [Celery](https://docs.celeryproject.org/) - Task queue
+- [PostgreSQL](https://www.postgresql.org/) - Database
+- [Redis](https://redis.io/) - Cache and message broker
