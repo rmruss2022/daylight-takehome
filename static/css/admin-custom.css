@@ -8,12 +8,48 @@
 
 /* ========== Admin Base Overrides ========== */
 
-body {
-  background-color: var(--color-void) !important;
+/* Force EVERYTHING to have dark background (except html/body) */
+* {
+  background-color: transparent !important;
+}
+
+/* Root and body: dark theme so no white ever shows (override Django admin/login.css) */
+html,
+body,
+body.login,
+body.login #container,
+body.dashboard #container {
+  background-color: #0a0e27 !important;
   background-image: var(--gradient-aurora) !important;
   background-attachment: fixed;
   background-size: 200% 200%;
+  min-height: 100% !important;
+}
+
+body {
+  min-height: 100vh !important;
   animation: aurora-shift 20s ease infinite;
+}
+
+/* Specific dark backgrounds for containers (override Django admin defaults) */
+#container,
+#content,
+#content-main,
+.colM,
+.colMS,
+.colSM,
+#changelist,
+#changelist-form,
+.change-list,
+.changelist-results,
+div.results,
+.paginator,
+.xfull,
+main,
+#main {
+  background-color: transparent !important;
+  background-image: none !important;
+  background: transparent !important;
 }
 
 /* ========== Header ========== */
@@ -69,7 +105,7 @@ body {
 /* ========== Breadcrumbs ========== */
 
 div.breadcrumbs {
-  background: rgba(26, 31, 58, 0.6) !important;
+  background: linear-gradient(135deg, rgba(18, 24, 46, 0.95), rgba(10, 14, 39, 0.95)) !important;
   backdrop-filter: blur(10px);
   border: var(--border-width) solid var(--glass-border);
   border-radius: var(--radius-lg);
@@ -96,6 +132,11 @@ div.breadcrumbs a:hover {
   padding: var(--space-8) var(--space-6) !important;
   max-width: 1600px;
   margin: 0 auto !important;
+  background: transparent !important;
+}
+
+#content-main {
+  background: transparent !important;
 }
 
 /* ========== Module Containers ========== */
@@ -135,6 +176,27 @@ div.breadcrumbs a:hover {
 
 /* ========== Tables ========== */
 
+table,
+table * {
+  background: transparent !important;
+}
+
+#result_list,
+#changelist-form,
+.results {
+  background: transparent !important;
+}
+
+#result_list table,
+.results table,
+table#result_list {
+  background: var(--gradient-card) !important;
+  border: var(--border-width) solid var(--glass-border) !important;
+  border-radius: var(--radius-xl) !important;
+  overflow: hidden;
+  backdrop-filter: var(--glass-blur);
+}
+
 table {
   color: var(--color-ice) !important;
   font-family: var(--font-body) !important;
@@ -155,6 +217,7 @@ thead th {
 tbody tr {
   transition: all var(--transition-fast) !important;
   border-bottom: var(--border-width) solid rgba(255, 255, 255, 0.04) !important;
+  background: transparent !important;
 }
 
 tbody tr:hover {
@@ -168,6 +231,7 @@ tbody td {
   padding: var(--space-4) var(--space-6) !important;
   color: var(--color-ice) !important;
   vertical-align: middle !important;
+  background: transparent !important;
 }
 
 tbody th a,
@@ -297,6 +361,7 @@ fieldset.module .description {
 /* ========== Buttons ========== */
 
 .button,
+button,
 input[type="submit"],
 input[type="button"],
 .submit-row input,
@@ -371,6 +436,15 @@ input[type="submit"].default:hover,
 
 #changelist .results {
   margin-top: var(--space-6) !important;
+  background: transparent !important;
+}
+
+#changelist-form .results {
+  background: transparent !important;
+}
+
+.xfull {
+  background: transparent !important;
 }
 
 #changelist-filter {
@@ -499,11 +573,12 @@ input[type="submit"].default:hover,
 /* ========== Actions ========== */
 
 .actions {
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: linear-gradient(135deg, rgba(18, 24, 46, 0.8), rgba(10, 14, 39, 0.8)) !important;
   border: var(--border-width) solid var(--glass-border) !important;
   border-radius: var(--radius-lg) !important;
   padding: var(--space-4) var(--space-6) !important;
   margin-bottom: var(--space-6) !important;
+  backdrop-filter: blur(10px);
 }
 
 .actions label {
@@ -512,6 +587,72 @@ input[type="submit"].default:hover,
 
 .actions select {
   margin: 0 var(--space-4) !important;
+}
+
+/* Action dropdown: force visible selected text in closed state */
+#changelist .actions select[name="action"],
+#changelist-form .actions select[name="action"] {
+  background: rgba(10, 14, 39, 0.9) !important;
+  color: var(--color-ice) !important;
+  -webkit-text-fill-color: var(--color-ice) !important;
+  font-weight: var(--weight-semibold) !important;
+  text-shadow: 0 0 0 var(--color-ice) !important;
+}
+
+/* Action dropdown options: readable in all states */
+#changelist .actions select[name="action"] option,
+#changelist-form .actions select[name="action"] option {
+  background: var(--color-deep-navy) !important;
+  color: var(--color-ice) !important;
+  -webkit-text-fill-color: var(--color-ice) !important;
+}
+
+#changelist .actions select[name="action"] option:checked,
+#changelist .actions select[name="action"] option:selected,
+#changelist-form .actions select[name="action"] option:checked,
+#changelist-form .actions select[name="action"] option:selected {
+  background: #1f2a4f !important;
+  color: var(--color-white) !important;
+  -webkit-text-fill-color: var(--color-white) !important;
+}
+
+/* Center "Go" button text in action bar */
+.actions button,
+.actions .button,
+.actions input[type="submit"],
+.actions input[type="button"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  height: 2.5rem !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: var(--space-6) !important;
+  padding-right: var(--space-6) !important;
+  vertical-align: middle !important;
+}
+
+/* Search form */
+#changelist-search,
+#toolbar {
+  background: linear-gradient(135deg, rgba(18, 24, 46, 0.8), rgba(10, 14, 39, 0.8)) !important;
+  border: var(--border-width) solid var(--glass-border) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: var(--space-4) var(--space-6) !important;
+  backdrop-filter: blur(10px);
+  margin-bottom: var(--space-6) !important;
+}
+
+#changelist-search label {
+  color: var(--color-silver) !important;
+}
+
+#searchbar {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: var(--border-width) solid var(--glass-border) !important;
+  color: var(--color-white) !important;
 }
 
 /* ========== Dashboard Modules ========== */
@@ -615,6 +756,8 @@ td:has(.field-get_device_type) {
 #nav-sidebar a {
   color: var(--color-ice) !important;
   transition: all var(--transition-base);
+  display: block !important;
+  padding: var(--space-3) var(--space-4) !important;
 }
 
 #nav-sidebar a:hover {
@@ -626,6 +769,29 @@ td:has(.field-get_device_type) {
 #nav-sidebar .current-model {
   background: rgba(0, 212, 255, 0.15) !important;
   border-left: 3px solid var(--color-energy-storage) !important;
+}
+
+/* Make sidebar navigation items fully clickable */
+#nav-sidebar li {
+  position: relative;
+}
+
+#nav-sidebar li a[href]:not(.addlink) {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 1 !important;
+  padding: var(--space-3) var(--space-4) !important;
+}
+
+#nav-sidebar .addlink {
+  position: relative !important;
+  z-index: 2 !important;
+  float: right !important;
+  margin-top: var(--space-2) !important;
+  margin-right: var(--space-2) !important;
 }
 
 #toggle-nav-sidebar {
@@ -707,14 +873,19 @@ div.breadcrumbs + * {
 
 /* ========== Select Options ========== */
 
-select option {
-  background: var(--color-deep-navy) !important;
+/* All dropdown options: light text on dark so nothing blends (Delete, etc.) */
+select {
   color: var(--color-white) !important;
+  -webkit-text-fill-color: var(--color-white) !important;
 }
 
-select option:checked {
-  background: var(--color-energy-storage) !important;
-  color: var(--color-void) !important;
+select option,
+select option:checked,
+select option:selected,
+select option:hover,
+select option:focus {
+  background: var(--color-deep-navy) !important;
+  color: var(--color-white) !important;
 }
 
 /* ========== Aligned Fields ========== */

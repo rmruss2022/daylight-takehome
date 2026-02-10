@@ -23,6 +23,12 @@
 </style>
 {% endblock %}
 
+{% block extrahead %}
+{{ block.super }}
+{# Load dark theme last so it overrides Django admin login.css, responsive.css, etc. #}
+<link rel="stylesheet" href="{% static 'css/admin-custom.css' %}">
+{% endblock %}
+
 {% block userlinks %}
 <div style="display: flex; align-items: center; gap: 1rem;">
     {% if site_url %}

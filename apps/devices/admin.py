@@ -1,6 +1,8 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.db.models import Count
+from django.utils.html import format_html
 from .models import (
     Device, SolarPanel, Generator, Battery,
     ElectricVehicle, AirConditioner, Heater
@@ -50,18 +52,22 @@ class DeviceAdmin(admin.ModelAdmin):
             'heater': '🔥'
         }
         icon = icons.get(obj.get_device_type(), '⚡')
-        return f'<span style="font-size: 24px;">{icon}</span>'
+        return format_html('<span style="font-size: 24px;">{}</span>', icon)
     device_icon.short_description = ''
-    device_icon.allow_tags = True
 
     def status_badge(self, obj):
         """Display status with badge."""
         if obj.status == 'online':
-            return '<span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(0, 255, 136, 0.15); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 12px; color: #00ff88; font-weight: 600; font-size: 12px;"><span style="width: 8px; height: 8px; background: #00ff88; border-radius: 50%; animation: pulse 2s infinite;"></span>ONLINE</span>'
+            return format_html(
+                '<span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(0, 255, 136, 0.15); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 12px; color: #00ff88; font-weight: 600; font-size: 12px;">'
+                '<span style="width: 8px; height: 8px; background: #00ff88; border-radius: 50%; animation: pulse 2s infinite;"></span>ONLINE</span>'
+            )
         else:
-            return '<span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(148, 163, 184, 0.15); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; color: #94a3b8; font-weight: 600; font-size: 12px;"><span style="width: 8px; height: 8px; background: #64748b; border-radius: 50%;"></span>OFFLINE</span>'
+            return format_html(
+                '<span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(148, 163, 184, 0.15); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; color: #94a3b8; font-weight: 600; font-size: 12px;">'
+                '<span style="width: 8px; height: 8px; background: #64748b; border-radius: 50%;"></span>OFFLINE</span>'
+            )
     status_badge.short_description = 'Status'
-    status_badge.allow_tags = True
 
     def get_device_type(self, obj):
         return obj.get_device_type().replace('_', ' ').title()
@@ -128,16 +134,16 @@ class BatteryAdmin(DeviceAdmin):
         """Display charge percentage with visual bar."""
         percentage = obj.charge_percentage
         color = '#00d4ff' if percentage > 20 else '#ff8c42'
-        return f'''
-            <div style="display: flex; align-items: center; gap: 8px; min-width: 200px;">
-                <div style="flex: 1; height: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden;">
-                    <div style="width: {percentage}%; height: 100%; background: {color}; border-radius: 6px; transition: width 0.3s;"></div>
-                </div>
-                <span style="font-family: monospace; font-weight: 600; color: {color};">{percentage:.1f}%</span>
-            </div>
-        '''
+        return format_html(
+            '<div style="display: flex; align-items: center; gap: 8px; min-width: 200px;">'
+            '<div style="flex: 1; height: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden;">'
+            '<div style="width: {}%; height: 100%; background: {}; border-radius: 6px; transition: width 0.3s;"></div>'
+            '</div>'
+            '<span style="font-family: monospace; font-weight: 600; color: {};">{:.1f}%</span>'
+            '</div>',
+            percentage, color, color, percentage
+        )
     charge_bar.short_description = 'Charge Level'
-    charge_bar.allow_tags = True
 
 
 class ElectricVehicleAdmin(DeviceAdmin):
@@ -170,24 +176,26 @@ class ElectricVehicleAdmin(DeviceAdmin):
             'offline': ('#64748b', 'rgba(148, 163, 184, 0.15)', 'rgba(148, 163, 184, 0.3)')
         }
         color, bg, border = colors.get(obj.mode, colors['offline'])
-        return f'<span style="display: inline-flex; align-items: center; padding: 4px 12px; background: {bg}; border: 1px solid {border}; border-radius: 12px; color: {color}; font-weight: 600; font-size: 12px; text-transform: uppercase;">{obj.mode}</span>'
+        return format_html(
+            '<span style="display: inline-flex; align-items: center; padding: 4px 12px; background: {}; border: 1px solid {}; border-radius: 12px; color: {}; font-weight: 600; font-size: 12px; text-transform: uppercase;">{}</span>',
+            bg, border, color, obj.mode
+        )
     mode_badge.short_description = 'Mode'
-    mode_badge.allow_tags = True
 
     def charge_bar(self, obj):
         """Display charge percentage with visual bar."""
         percentage = obj.charge_percentage
         color = '#00d4ff' if percentage > 20 else '#ff8c42'
-        return f'''
-            <div style="display: flex; align-items: center; gap: 8px; min-width: 200px;">
-                <div style="flex: 1; height: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden;">
-                    <div style="width: {percentage}%; height: 100%; background: {color}; border-radius: 6px; transition: width 0.3s;"></div>
-                </div>
-                <span style="font-family: monospace; font-weight: 600; color: {color};">{percentage:.1f}%</span>
-            </div>
-        '''
+        return format_html(
+            '<div style="display: flex; align-items: center; gap: 8px; min-width: 200px;">'
+            '<div style="flex: 1; height: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden;">'
+            '<div style="width: {}%; height: 100%; background: {}; border-radius: 6px; transition: width 0.3s;"></div>'
+            '</div>'
+            '<span style="font-family: monospace; font-weight: 600; color: {};">{:.1f}%</span>'
+            '</div>',
+            percentage, color, color, percentage
+        )
     charge_bar.short_description = 'Charge Level'
-    charge_bar.allow_tags = True
 
 
 class AirConditionerAdmin(DeviceAdmin):
@@ -232,3 +240,7 @@ admin_site.register(ElectricVehicle, ElectricVehicleAdmin)
 admin_site.register(AirConditioner, AirConditionerAdmin)
 admin_site.register(Heater, HeaterAdmin)
 admin_site.register(Device, DeviceAdmin)
+
+# Register Django built-in models
+admin_site.register(User, UserAdmin)
+admin_site.register(Group, GroupAdmin)
