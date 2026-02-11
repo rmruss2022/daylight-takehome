@@ -290,7 +290,7 @@ input[type="number"],
 input[type="date"],
 input[type="time"],
 input[type="datetime-local"],
-
+/* select, */  /* STRIPPED: Reset to base HTML */
 textarea {
   background: rgba(255, 255, 255, 0.05) !important;
   border: var(--border-width) solid var(--glass-border) !important;
@@ -309,7 +309,7 @@ input[type="number"]:focus,
 input[type="date"]:focus,
 input[type="time"]:focus,
 input[type="datetime-local"]:focus,
-
+/* select:focus, */  /* STRIPPED: Reset to base HTML */
 textarea:focus {
   background: rgba(255, 255, 255, 0.08) !important;
   border-color: var(--color-energy-storage) !important;
@@ -585,6 +585,58 @@ input[type="submit"].default:hover,
   color: var(--color-silver) !important;
 }
 
+/* STRIPPED: All select styling removed to reset to base HTML */
+/*
+.actions select {
+  margin: 0 var(--space-4) !important;
+}
+
+#changelist .actions select[name="action"],
+#changelist-form .actions select[name="action"],
+.actions select[name="action"],
+select[name="action"] {
+  background: rgba(10, 14, 39, 0.9) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  -moz-text-fill-color: #ffffff !important;
+  font-weight: var(--weight-semibold) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+#changelist .actions select[name="action"] *,
+#changelist-form .actions select[name="action"] *,
+.actions select[name="action"] *,
+select[name="action"] * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  -moz-text-fill-color: #ffffff !important;
+}
+
+#changelist .actions select[name="action"] option,
+#changelist-form .actions select[name="action"] option,
+.actions select[name="action"] option,
+select[name="action"] option {
+  background: var(--color-deep-navy) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  -moz-text-fill-color: #ffffff !important;
+}
+
+#changelist .actions select[name="action"] option:checked,
+#changelist .actions select[name="action"] option:selected,
+#changelist-form .actions select[name="action"] option:checked,
+#changelist-form .actions select[name="action"] option:selected,
+.actions select[name="action"] option:checked,
+.actions select[name="action"] option:selected,
+select[name="action"] option:checked,
+select[name="action"] option:selected {
+  background: #1f2a4f !important;
+  color: #3dd5f3 !important;
+  -webkit-text-fill-color: #3dd5f3 !important;
+  -moz-text-fill-color: #3dd5f3 !important;
+}
+*/
 
 /* Center "Go" button text in action bar */
 .actions button,
@@ -874,6 +926,22 @@ div.breadcrumbs + * {
 
 /* ========== Select Options ========== */
 
+/* STRIPPED: All select styling removed to reset to base HTML */
+/*
+select {
+  color: var(--color-white) !important;
+  -webkit-text-fill-color: var(--color-white) !important;
+}
+
+select option,
+select option:checked,
+select option:selected,
+select option:hover,
+select option:focus {
+  background: var(--color-deep-navy) !important;
+  color: var(--color-white) !important;
+}
+*/
 
 /* ========== Aligned Fields ========== */
 
