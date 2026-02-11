@@ -67,7 +67,7 @@ const QUERIES = {
           maxChargeRateKw
           maxDischargeRateKw
           chargePercentage
-          current_flow_w
+          currentFlowW
         }
         ... on ElectricVehicleType {
           id
@@ -79,7 +79,7 @@ const QUERIES = {
           maxDischargeRateKw
           mode
           chargePercentage
-          current_flow_w
+          currentFlowW
         }
         ... on AirConditionerType {
           id
@@ -230,11 +230,11 @@ function updateFlowVisualization(stats) {
     } else if (typename === 'GeneratorType' && device.status === 'ONLINE') {
       generatorTotal += (stats.currentProduction || 0) * 0.3 / (state.devices.filter(d => d.__typename === 'GeneratorType').length || 1);
     } else if (typename === 'BatteryType') {
-      // Use actual flow from device data (field name is snake_case from GraphQL)
-      batteryFlowTotal += device.current_flow_w || 0;
+      // Use actual flow from device data
+      batteryFlowTotal += device.currentFlowW || 0;
     } else if (typename === 'ElectricVehicleType') {
-      // Use actual flow from device data (field name is snake_case from GraphQL)
-      evFlowTotal += device.current_flow_w || 0;
+      // Use actual flow from device data
+      evFlowTotal += device.currentFlowW || 0;
     } else if ((typename === 'AirConditionerType' || typename === 'HeaterType') && device.status === 'ONLINE') {
       hvacTotal += (stats.currentConsumption || 0) * 0.6 / (state.devices.filter(d => d.__typename === 'AirConditionerType' || d.__typename === 'HeaterType').length || 1);
     }
