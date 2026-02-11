@@ -154,7 +154,7 @@ if created:
 
 print(f"\n📊 Summary:")
 print(f"  - New devices created: {devices_created}")
-print(f"  - Total devices for testuser1: {user.device_set.count()}")
+print(f"  - Total devices for testuser1: {user.devices.count()}")
 print(f"\n🔑 Login credentials:")
 print(f"  - Username: testuser1")
 print(f"  - Password: testpass123")
