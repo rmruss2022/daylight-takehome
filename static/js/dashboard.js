@@ -218,8 +218,10 @@ function updateFlowVisualization(stats) {
   let solarTotal = 0;
   let generatorTotal = 0;
   let hvacTotal = 0;
-  let batteryFlowTotal = 0;
-  let evFlowTotal = 0;
+  
+  // Count batteries and EVs
+  let batteryCount = 0;
+  let evCount = 0;
 
   state.devices.forEach(device => {
     const typename = device.__typename;
@@ -230,15 +232,19 @@ function updateFlowVisualization(stats) {
     } else if (typename === 'GeneratorType' && device.status === 'ONLINE') {
       generatorTotal += (stats.currentProduction || 0) * 0.3 / (state.devices.filter(d => d.__typename === 'GeneratorType').length || 1);
     } else if (typename === 'BatteryType') {
-      // Use actual flow from device data
-      batteryFlowTotal += device.currentFlowW || 0;
+      batteryCount++;
     } else if (typename === 'ElectricVehicleType') {
-      // Use actual flow from device data
-      evFlowTotal += device.currentFlowW || 0;
+      evCount++;
     } else if ((typename === 'AirConditionerType' || typename === 'HeaterType') && device.status === 'ONLINE') {
       hvacTotal += (stats.currentConsumption || 0) * 0.6 / (state.devices.filter(d => d.__typename === 'AirConditionerType' || d.__typename === 'HeaterType').length || 1);
     }
   });
+
+  // Split storage flow between batteries and EVs based on device count
+  const totalStorageFlow = stats.currentStorageFlow || 0;
+  const totalStorageDevices = batteryCount + evCount;
+  const batteryFlowTotal = totalStorageDevices > 0 ? (totalStorageFlow * batteryCount / totalStorageDevices) : 0;
+  const evFlowTotal = totalStorageDevices > 0 ? (totalStorageFlow * evCount / totalStorageDevices) : 0;
 
   // Update display
   document.getElementById('solar-production').textContent = Math.round(solarTotal);
