@@ -67,6 +67,7 @@ const QUERIES = {
           maxChargeRateKw
           maxDischargeRateKw
           chargePercentage
+          currentFlowW
         }
         ... on ElectricVehicleType {
           id
@@ -78,6 +79,7 @@ const QUERIES = {
           maxDischargeRateKw
           mode
           chargePercentage
+          currentFlowW
         }
         ... on AirConditionerType {
           id
@@ -212,16 +214,38 @@ function updateEnergyStats(stats) {
  * Update flow visualization with breakdown
  */
 function updateFlowVisualization(stats) {
-  // These would come from detailed device data
-  // For now, using placeholder logic
-  document.getElementById('solar-production').textContent = Math.round((stats.currentProduction || 0) * 0.7);
-  document.getElementById('generator-production').textContent = Math.round((stats.currentProduction || 0) * 0.3);
+  // Calculate production breakdown from actual devices
+  let solarTotal = 0;
+  let generatorTotal = 0;
+  let hvacTotal = 0;
+  let batteryFlowTotal = 0;
+  let evFlowTotal = 0;
 
-  document.getElementById('hvac-consumption').textContent = Math.round((stats.currentConsumption || 0) * 0.6);
+  state.devices.forEach(device => {
+    const typename = device.__typename;
+    
+    if (typename === 'SolarPanelType' && device.status === 'ONLINE') {
+      // Solar panels - could fetch actual production from Redis, for now use proportional
+      solarTotal += (stats.currentProduction || 0) * 0.7 / (state.devices.filter(d => d.__typename === 'SolarPanelType').length || 1);
+    } else if (typename === 'GeneratorType' && device.status === 'ONLINE') {
+      generatorTotal += (stats.currentProduction || 0) * 0.3 / (state.devices.filter(d => d.__typename === 'GeneratorType').length || 1);
+    } else if (typename === 'BatteryType') {
+      // Use actual flow from device data
+      batteryFlowTotal += device.currentFlowW || 0;
+    } else if (typename === 'ElectricVehicleType') {
+      // Use actual flow from device data
+      evFlowTotal += device.currentFlowW || 0;
+    } else if ((typename === 'AirConditionerType' || typename === 'HeaterType') && device.status === 'ONLINE') {
+      hvacTotal += (stats.currentConsumption || 0) * 0.6 / (state.devices.filter(d => d.__typename === 'AirConditionerType' || d.__typename === 'HeaterType').length || 1);
+    }
+  });
 
-  const storageFlow = stats.currentStorageFlow || 0;
-  document.getElementById('battery-flow').textContent = Math.round(storageFlow * 0.6);
-  document.getElementById('ev-flow').textContent = Math.round(storageFlow * 0.4);
+  // Update display
+  document.getElementById('solar-production').textContent = Math.round(solarTotal);
+  document.getElementById('generator-production').textContent = Math.round(generatorTotal);
+  document.getElementById('hvac-consumption').textContent = Math.round(hvacTotal);
+  document.getElementById('battery-flow').textContent = Math.round(batteryFlowTotal);
+  document.getElementById('ev-flow').textContent = Math.round(evFlowTotal);
 }
 
 /**
@@ -508,21 +532,21 @@ async function refreshData() {
   state.isLoading = true;
 
   try {
-    console.log('Fetching energy stats...');
-    // Fetch energy stats
-    const energyData = await fetchGraphQL(QUERIES.energyStats);
+    console.log('Fetching energy stats and devices...');
+    // Fetch both energy stats and devices together
+    const [energyData, devicesData] = await Promise.all([
+      fetchGraphQL(QUERIES.energyStats),
+      fetchGraphQL(QUERIES.devices)
+    ]);
+    
     console.log('Energy data received:', energyData);
+    console.log('Devices data received:', devicesData);
+    
     state.energyStats = energyData.energyStats;
+    state.devices = devicesData.allDevices || [];
+    
     updateEnergyStats(state.energyStats);
-
-    // Fetch devices (less frequently)
-    if (!state.devices.length || Math.random() < 0.2) {
-      console.log('Fetching devices...');
-      const devicesData = await fetchGraphQL(QUERIES.devices);
-      console.log('Devices data received:', devicesData);
-      state.devices = devicesData.allDevices || [];
-      renderDevices(state.devices);
-    }
+    renderDevices(state.devices);
 
     updateTimestamp();
     state.retryCount = 0;

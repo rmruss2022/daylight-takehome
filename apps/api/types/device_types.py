@@ -55,6 +55,7 @@ class BatteryType(DeviceInterface):
     max_charge_rate_kw: float
     max_discharge_rate_kw: float
     charge_percentage: float
+    current_flow_w: float  # Current power flow: positive = charging, negative = discharging
 
 
 @strawberry.type
@@ -68,6 +69,7 @@ class ElectricVehicleType(DeviceInterface):
     last_seen_at: Optional[datetime]
     driving_efficiency_kwh_per_hour: float
     charge_percentage: float
+    current_flow_w: float  # Current power flow: positive = charging, negative = discharging
 
 
 @strawberry.type

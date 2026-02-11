@@ -124,6 +124,11 @@ def convert_device_to_graphql(device):
             rated_output_w=specific_device.rated_output_w,
         )
     elif device_type == 'battery':
+        # Get current flow from Redis
+        current_flow_w = 0.0
+        if redis_data and 'flow_w' in redis_data:
+            current_flow_w = redis_data['flow_w']
+        
         return BatteryType(
             id=device.id,
             name=device.name,
@@ -136,10 +141,17 @@ def convert_device_to_graphql(device):
             max_charge_rate_kw=specific_device.max_charge_rate_kw,
             max_discharge_rate_kw=specific_device.max_discharge_rate_kw,
             charge_percentage=specific_device.charge_percentage,
+            current_flow_w=current_flow_w,
         )
     elif device_type == 'electric_vehicle':
         # Use Redis mode if available, otherwise fall back to DB
         mode_value = ev_mode if ev_mode else specific_device.mode
+        
+        # Get current flow from Redis
+        current_flow_w = 0.0
+        if redis_data and 'flow_w' in redis_data:
+            current_flow_w = redis_data['flow_w']
+        
         return ElectricVehicleType(
             id=device.id,
             name=device.name,
@@ -155,6 +167,7 @@ def convert_device_to_graphql(device):
             last_seen_at=specific_device.last_seen_at,
             driving_efficiency_kwh_per_hour=specific_device.driving_efficiency_kwh_per_hour,
             charge_percentage=specific_device.charge_percentage,
+            current_flow_w=current_flow_w,
         )
     elif device_type == 'air_conditioner':
         return AirConditionerType(
