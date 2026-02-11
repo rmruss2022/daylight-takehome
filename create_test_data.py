@@ -27,13 +27,13 @@ else:
 # Create devices for testuser1
 devices_created = 0
 
-# Battery 1
+# Battery 1 - Set to 30% so it will charge
 battery1, created = Battery.objects.get_or_create(
     name="Home Battery",
     user=user,
     defaults={
         'capacity_kwh': 13.5,
-        'current_charge_kwh': 6.75,
+        'current_charge_kwh': 4.0,  # 30% charge - will trigger charging
         'max_charge_rate_kw': 5.0,
         'max_discharge_rate_kw': 5.0,
         'status': 'online'
@@ -43,13 +43,13 @@ if created:
     devices_created += 1
     print(f"✅ Created: {battery1.name}")
 
-# Battery 2
+# Battery 2 - Set to 80% so it will discharge
 battery2, created = Battery.objects.get_or_create(
     name="Garage Battery",
     user=user,
     defaults={
         'capacity_kwh': 10.0,
-        'current_charge_kwh': 5.0,
+        'current_charge_kwh': 8.0,  # 80% charge - will trigger discharging
         'max_charge_rate_kw': 3.3,
         'max_discharge_rate_kw': 3.3,
         'status': 'online'
@@ -59,22 +59,39 @@ if created:
     devices_created += 1
     print(f"✅ Created: {battery2.name}")
 
-# EV
-ev, created = ElectricVehicle.objects.get_or_create(
+# EV 1 - Set to 60% so it will charge (connected, not driving)
+ev1, created = ElectricVehicle.objects.get_or_create(
     name="Tesla Model 3",
     user=user,
     defaults={
         'capacity_kwh': 75.0,
-        'current_charge_kwh': 64.5,
+        'current_charge_kwh': 45.0,  # 60% charge - will charge up to 90%
         'max_charge_rate_kw': 11.0,
         'driving_efficiency_kwh_per_hour': 15.0,
         'status': 'online',
-        'mode': 'offline'  # 12:38 PM EST = 5:38 PM UTC, should be driving (7 AM-6 PM EST = 12 PM-11 PM UTC)
+        'mode': 'charging'  # Connected and charging
     }
 )
 if created:
     devices_created += 1
-    print(f"✅ Created: {ev.name}")
+    print(f"✅ Created: {ev1.name}")
+
+# EV 2 - Second vehicle
+ev2, created = ElectricVehicle.objects.get_or_create(
+    name="Nissan Leaf",
+    user=user,
+    defaults={
+        'capacity_kwh': 62.0,
+        'current_charge_kwh': 40.0,  # 65% charge - will charge up to 90%
+        'max_charge_rate_kw': 7.5,
+        'driving_efficiency_kwh_per_hour': 12.0,
+        'status': 'online',
+        'mode': 'charging'  # Connected and charging
+    }
+)
+if created:
+    devices_created += 1
+    print(f"✅ Created: {ev2.name}")
 
 # Solar Panel 1
 solar1, created = SolarPanel.objects.get_or_create(
