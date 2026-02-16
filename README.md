@@ -8,6 +8,57 @@
 
 A comprehensive smart home energy management system with real-time monitoring, device simulation, and dual API support (GraphQL + REST). Built with Django, React, and Docker for production-ready deployment.
 
+
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Docker Desktop** (with Docker Compose)
+- **Git**
+- **Node.js 18+** (for local frontend development)
+- At least **4GB RAM** available
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/rmruss2022/daylight-takehome
+   cd Daylight
+   ```
+
+2. **Copy environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration (optional for development)
+   ```
+
+3. **Start all services**
+   ```bash
+   docker compose up --build
+   ```
+
+   This starts:
+   - `web`: Django application (port 8000)
+   - `frontend`: React application (port 3000)
+   - `db`: PostgreSQL database (port 5432)
+   - `redis`: Redis cache (port 6379)
+   - `celery`: Background worker
+   - `celery-beat`: Task scheduler
+
+4. **Initialize database** (in a new terminal)
+   ```bash
+   # Run migrations
+   docker compose exec web python manage.py migrate
+
+   # Create admin user
+   docker compose exec web python manage.py createsuperuser
+
+   # (Optional) Load sample data
+   docker compose exec web python manage.py seed_devices
+   ```
+
+
 ## 🌟 Features
 
 ### Core Capabilities
@@ -97,54 +148,6 @@ A comprehensive smart home energy management system with real-time monitoring, d
 **One-click deployment to Railway** - Automatically sets up Django, PostgreSQL, Redis, and Celery workers.
 
 For detailed deployment instructions, see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Docker Desktop** (with Docker Compose)
-- **Git**
-- **Node.js 18+** (for local frontend development)
-- At least **4GB RAM** available
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd Daylight
-   ```
-
-2. **Copy environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration (optional for development)
-   ```
-
-3. **Start all services**
-   ```bash
-   docker compose up --build
-   ```
-
-   This starts:
-   - `web`: Django application (port 8000)
-   - `frontend`: React application (port 3000)
-   - `db`: PostgreSQL database (port 5432)
-   - `redis`: Redis cache (port 6379)
-   - `celery`: Background worker
-   - `celery-beat`: Task scheduler
-
-4. **Initialize database** (in a new terminal)
-   ```bash
-   # Run migrations
-   docker compose exec web python manage.py migrate
-
-   # Create admin user
-   docker compose exec web python manage.py createsuperuser
-
-   # (Optional) Load sample data
-   docker compose exec web python manage.py seed_devices
-   ```
 
 ### Access Points
 
