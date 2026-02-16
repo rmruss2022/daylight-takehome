@@ -22,7 +22,7 @@ A comprehensive smart home energy management system with real-time monitoring, d
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/rmruss2022/daylight-takehome
    cd Daylight
    ```
 
