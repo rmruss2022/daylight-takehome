@@ -6,6 +6,7 @@
 [![GraphQL](https://img.shields.io/badge/graphql-strawberry-ff69b4.svg)](https://strawberry.rocks/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+
 A comprehensive smart home energy management system with real-time monitoring, device simulation, and dual API support (GraphQL + REST). Built with Django, React, and Docker for production-ready deployment.
 
 
