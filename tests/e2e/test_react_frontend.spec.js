@@ -2,9 +2,8 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('React Frontend', () => {
   const REACT_URL = 'http://localhost:3000';
-  const API_URL = 'http://localhost:8000';
-  const TEST_USER = 'testuser1';
-  const TEST_PASS = 'testpassword123';
+  const TEST_USER = process.env.REACT_TEST_USER || 'testuser1';
+  const TEST_PASS = process.env.REACT_TEST_PASS || 'testpass123';
 
   test.beforeEach(async ({ page }) => {
     // Navigate to React app
@@ -29,7 +28,9 @@ test.describe('React Frontend', () => {
     await page.waitForURL(/dashboard|home/, { timeout: 10000 });
     
     // Verify we're logged in (token should be stored)
-    const token = await page.evaluate(() => localStorage.getItem('token') || localStorage.getItem('authToken'));
+    const token = await page.evaluate(
+      () => localStorage.getItem('access_token') || localStorage.getItem('token') || localStorage.getItem('authToken')
+    );
     expect(token).toBeTruthy();
   });
 
@@ -41,8 +42,8 @@ test.describe('React Frontend', () => {
     await page.waitForURL(/dashboard|home/, { timeout: 10000 });
 
     // Check for stat cards
-    await expect(page.locator('text=Total Production').or(page.locator('text=Solar Production'))).toBeVisible({ timeout: 5000 });
-    await expect(page.locator('text=Grid Usage').or(page.locator('text=Usage'))).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('text=Total Production').or(page.locator('text=Energy Overview')).first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('text=Net Grid Flow').or(page.locator('text=Total Consumption')).first()).toBeVisible({ timeout: 5000 });
   });
 
   test('should navigate to battery management page', async ({ page }) => {
@@ -61,7 +62,7 @@ test.describe('React Frontend', () => {
       await expect(page.locator('text=Battery').or(page.locator('text=Storage'))).toBeVisible();
     } else {
       // If no dedicated battery page, check that battery info is on dashboard
-      await expect(page.locator('text=Battery').or(page.locator('text=Storage'))).toBeVisible({ timeout: 3000 });
+      await expect(page.locator('text=Battery').or(page.locator('text=Storage')).first()).toBeVisible({ timeout: 3000 });
     }
   });
 
@@ -74,7 +75,7 @@ test.describe('React Frontend', () => {
 
     // Check for devices section
     await expect(
-      page.locator('text=Devices').or(page.locator('text=Connected')).or(page.locator('text=Status'))
+      page.locator('text=Connected Devices').or(page.locator('text=Devices')).first()
     ).toBeVisible({ timeout: 5000 });
   });
 
@@ -117,7 +118,7 @@ test.describe('React Frontend', () => {
 
     // Should show error message
     await expect(
-      page.locator('text=Invalid').or(page.locator('text=Error')).or(page.locator('text=failed'))
+      page.locator('text=No active account').or(page.locator('text=Invalid')).or(page.locator('text=Login failed')).first()
     ).toBeVisible({ timeout: 5000 });
   });
 
@@ -154,7 +155,7 @@ test.describe('React Frontend', () => {
     await page.waitForURL(/dashboard|home/, { timeout: 10000 });
 
     // Check that data is being displayed (even if it's zero/mock data)
-    const dataElements = page.locator('[class*="stat"], [class*="metric"], [class*="value"]');
+    const dataElements = page.locator('text=Energy Overview').or(page.locator('text=Total Production')).first();
     await expect(dataElements.first()).toBeVisible({ timeout: 5000 });
     
     // Verify numbers are present

@@ -6,6 +6,11 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Batteries from './pages/Batteries';
 import Users from './pages/Users';
+import ElectricVehicles from './pages/ElectricVehicles';
+import SolarPanels from './pages/SolarPanels';
+import Generators from './pages/Generators';
+import AirConditioners from './pages/AirConditioners';
+import Heaters from './pages/Heaters';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -56,10 +61,7 @@ const App: React.FC = () => {
             path="/electric-vehicles"
             element={
               <ProtectedRoute>
-                <div style={{ padding: '24px' }}>
-                  <h1>🚗 Electric Vehicles</h1>
-                  <p>EV management coming soon...</p>
-                </div>
+                <ElectricVehicles />
               </ProtectedRoute>
             }
           />
@@ -67,10 +69,7 @@ const App: React.FC = () => {
             path="/solar-panels"
             element={
               <ProtectedRoute>
-                <div style={{ padding: '24px' }}>
-                  <h1>☀️ Solar Panels</h1>
-                  <p>Solar panel management coming soon...</p>
-                </div>
+                <SolarPanels />
               </ProtectedRoute>
             }
           />
@@ -78,10 +77,7 @@ const App: React.FC = () => {
             path="/generators"
             element={
               <ProtectedRoute>
-                <div style={{ padding: '24px' }}>
-                  <h1>⚡ Generators</h1>
-                  <p>Generator management coming soon...</p>
-                </div>
+                <Generators />
               </ProtectedRoute>
             }
           />
@@ -89,10 +85,7 @@ const App: React.FC = () => {
             path="/air-conditioners"
             element={
               <ProtectedRoute>
-                <div style={{ padding: '24px' }}>
-                  <h1>❄️ Air Conditioners</h1>
-                  <p>AC management coming soon...</p>
-                </div>
+                <AirConditioners />
               </ProtectedRoute>
             }
           />
@@ -100,10 +93,7 @@ const App: React.FC = () => {
             path="/heaters"
             element={
               <ProtectedRoute>
-                <div style={{ padding: '24px' }}>
-                  <h1>🔥 Heaters</h1>
-                  <p>Heater management coming soon...</p>
-                </div>
+                <Heaters />
               </ProtectedRoute>
             }
           />

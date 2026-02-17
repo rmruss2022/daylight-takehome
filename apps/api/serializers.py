@@ -8,15 +8,38 @@ from apps.devices.models.consumption import AirConditioner, Heater
 
 class UserSerializer(serializers.ModelSerializer):
     device_count = serializers.SerializerMethodField()
+    password = serializers.CharField(write_only=True, required=False, min_length=8)
     
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 
-                  'is_active', 'is_staff', 'date_joined', 'device_count']
+                  'is_active', 'is_staff', 'date_joined', 'device_count', 'password']
         read_only_fields = ['id', 'date_joined', 'device_count']
     
     def get_device_count(self, obj):
         return obj.devices.count()
+
+    def validate(self, attrs):
+        password = attrs.get('password')
+        if self.instance is None and not password:
+            raise serializers.ValidationError({'password': 'Password is required when creating a user.'})
+        return attrs
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
 
 
 class DeviceSerializer(serializers.ModelSerializer):
