@@ -56,6 +56,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <span>{item.label}</span>
             </Link>
           ))}
+          <a
+            href="http://localhost:8000/graphql/"
+            target="_blank"
+            rel="noreferrer"
+            style={styles.navItem}
+          >
+            <span style={styles.navIcon}>🧪</span>
+            <span>GraphQL</span>
+          </a>
+          {user?.is_staff ? (
+            <a
+              href="http://localhost:8000/admin/"
+              target="_blank"
+              rel="noreferrer"
+              style={styles.navItem}
+            >
+              <span style={styles.navIcon}>🛠️</span>
+              <span>Django Admin</span>
+            </a>
+          ) : null}
         </div>
 
         <div style={styles.userSection}>

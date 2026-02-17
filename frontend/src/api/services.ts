@@ -1,6 +1,7 @@
 import axios from './axios';
 import type {
   User,
+  UserWritePayload,
   Device,
   Battery,
   ElectricVehicle,
@@ -9,9 +10,36 @@ import type {
   AirConditioner,
   Heater,
   DeviceStats,
+  EnergyStats,
+  GraphQLDevice,
   LoginCredentials,
   TokenResponse,
 } from '../types/index';
+
+const GRAPHQL_URL = import.meta.env.VITE_GRAPHQL_URL || 'http://localhost:8000/graphql/';
+
+async function graphqlRequest<T>(query: string): Promise<T> {
+  const token = localStorage.getItem('access_token');
+  const response = await fetch(GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ query }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`GraphQL request failed (${response.status})`);
+  }
+
+  const payload = await response.json();
+  if (payload.errors?.length) {
+    throw new Error(payload.errors[0].message || 'GraphQL query error');
+  }
+
+  return payload.data as T;
+}
 
 // Auth API
 export const authAPI = {
@@ -47,12 +75,12 @@ export const usersAPI = {
     return response.data;
   },
 
-  create: async (data: Partial<User>): Promise<User> => {
+  create: async (data: UserWritePayload): Promise<User> => {
     const response = await axios.post('/users/', data);
     return response.data;
   },
 
-  update: async (id: number, data: Partial<User>): Promise<User> => {
+  update: async (id: number, data: Partial<UserWritePayload>): Promise<User> => {
     const response = await axios.patch(`/users/${id}/`, data);
     return response.data;
   },
@@ -243,5 +271,80 @@ export const heatersAPI = {
 
   delete: async (id: number): Promise<void> => {
     await axios.delete(`/heaters/${id}/`);
+  },
+};
+
+export const dashboardAPI = {
+  getEnergyAndDevices: async (): Promise<{ energyStats: EnergyStats; allDevices: GraphQLDevice[] }> => {
+    const query = `
+      query {
+        energyStats {
+          currentProduction
+          currentConsumption
+          currentStorage {
+            totalCapacityWh
+            currentLevelWh
+            percentage
+          }
+          currentStorageFlow
+          netGridFlow
+        }
+        allDevices {
+          __typename
+          ... on SolarPanelType {
+            id
+            name
+            status
+            panelAreaM2
+            efficiency
+            maxCapacityW
+          }
+          ... on GeneratorType {
+            id
+            name
+            status
+            ratedOutputW
+          }
+          ... on BatteryType {
+            id
+            name
+            status
+            capacityKwh
+            currentChargeKwh
+            maxChargeRateKw
+            maxDischargeRateKw
+            chargePercentage
+          }
+          ... on ElectricVehicleType {
+            id
+            name
+            status
+            mode
+            capacityKwh
+            currentChargeKwh
+            maxChargeRateKw
+            maxDischargeRateKw
+            chargePercentage
+          }
+          ... on AirConditionerType {
+            id
+            name
+            status
+            ratedPowerW
+            minPowerW
+            maxPowerW
+          }
+          ... on HeaterType {
+            id
+            name
+            status
+            ratedPowerW
+            minPowerW
+            maxPowerW
+          }
+        }
+      }
+    `;
+    return graphqlRequest<{ energyStats: EnergyStats; allDevices: GraphQLDevice[] }>(query);
   },
 };

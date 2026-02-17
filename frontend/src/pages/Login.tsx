@@ -75,7 +75,7 @@ const Login: React.FC = () => {
         </form>
         
         <div style={styles.hint}>
-          <p>Demo credentials: admin / admin123</p>
+          <p>Demo credentials: testuser1 / testpass123</p>
         </div>
       </div>
     </div>

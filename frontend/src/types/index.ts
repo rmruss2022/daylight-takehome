@@ -10,6 +10,16 @@ export interface User {
   device_count: number;
 }
 
+export interface UserWritePayload {
+  username: string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  is_active?: boolean;
+  is_staff?: boolean;
+  password?: string;
+}
+
 export interface Device {
   id: number;
   user: number;
@@ -79,4 +89,38 @@ export interface LoginCredentials {
 export interface TokenResponse {
   access: string;
   refresh: string;
+}
+
+export interface CurrentStorage {
+  totalCapacityWh: number;
+  currentLevelWh: number;
+  percentage: number;
+}
+
+export interface EnergyStats {
+  currentProduction: number;
+  currentConsumption: number;
+  currentStorage: CurrentStorage;
+  currentStorageFlow: number;
+  netGridFlow: number;
+}
+
+export interface GraphQLDevice {
+  __typename: string;
+  id: string;
+  name: string;
+  status: 'ONLINE' | 'OFFLINE' | string;
+  mode?: 'CHARGING' | 'DISCHARGING' | 'OFFLINE' | string;
+  panelAreaM2?: number;
+  efficiency?: number;
+  maxCapacityW?: number;
+  ratedOutputW?: number;
+  capacityKwh?: number;
+  currentChargeKwh?: number;
+  maxChargeRateKw?: number;
+  maxDischargeRateKw?: number;
+  chargePercentage?: number;
+  ratedPowerW?: number;
+  minPowerW?: number;
+  maxPowerW?: number;
 }
