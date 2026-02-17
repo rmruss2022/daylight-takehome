@@ -19,17 +19,13 @@
         const actionSelect = document.querySelector('select[name="action"]');
         
         if (!actionSelect) {
-            console.log('Action dropdown not found on this page');
             return;
         }
-        
-        console.log('Customizing action dropdown...');
         
         // Remove the "-----" (empty) option
         const emptyOption = actionSelect.querySelector('option[value=""]');
         if (emptyOption) {
             emptyOption.remove();
-            console.log('✓ Removed empty option');
         }
         
         // Find and select the delete option
@@ -37,18 +33,9 @@
         if (deleteOption) {
             deleteOption.selected = true;
             actionSelect.value = 'delete_selected';
-            console.log('✓ Set "delete_selected" as default');
         }
         
         // Trigger change event to update any listeners
         actionSelect.dispatchEvent(new Event('change', { bubbles: true }));
-        
-        // Log the final state for debugging
-        console.log('Action dropdown state:');
-        console.log('  Options count:', actionSelect.options.length);
-        console.log('  Selected value:', actionSelect.value);
-        console.log('  Selected text:', actionSelect.options[actionSelect.selectedIndex]?.text);
     }
-    
-    console.log('admin-actions.js loaded and active');
 })();
