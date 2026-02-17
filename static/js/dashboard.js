@@ -288,19 +288,12 @@ function renderDevices(devices) {
     const icon = getDeviceIconFromTypename(typename);
     const specs = getDeviceSpecs(device);
 
-    // DEBUG: For EVs, show raw data
-    let debugInfo = '';
-    if (typename === 'ElectricVehicleType') {
-      debugInfo = `<div style="font-size: 10px; color: #666; margin-top: 4px;">DEBUG: status=${device.status}, mode=${device.mode}, hasMode=${!!device.mode}</div>`;
-    }
-
     return `
       <div class="device-card ${deviceType}" data-device-id="${device.id}">
         <div class="device-card-header">
           <div class="device-info">
             <h3 class="device-name">${device.name}</h3>
             <div class="device-type">${formatTypename(typename)}</div>
-            ${debugInfo}
           </div>
           <div class="device-icon ${deviceType.toLowerCase()}">${icon}</div>
         </div>
@@ -508,18 +501,14 @@ async function refreshData() {
   state.isLoading = true;
 
   try {
-    console.log('Fetching energy stats...');
     // Fetch energy stats
     const energyData = await fetchGraphQL(QUERIES.energyStats);
-    console.log('Energy data received:', energyData);
     state.energyStats = energyData.energyStats;
     updateEnergyStats(state.energyStats);
 
     // Fetch devices (less frequently)
     if (!state.devices.length || Math.random() < 0.2) {
-      console.log('Fetching devices...');
       const devicesData = await fetchGraphQL(QUERIES.devices);
-      console.log('Devices data received:', devicesData);
       state.devices = devicesData.allDevices || [];
       renderDevices(state.devices);
     }
@@ -583,8 +572,6 @@ function showError(message) {
  * Initialize dashboard
  */
 async function initDashboard() {
-  console.log('Initializing energy dashboard...');
-
   // Initial data fetch
   await refreshData();
 
@@ -604,7 +591,6 @@ function setupEventListeners() {
   if (userMenu) {
     userMenu.addEventListener('click', (e) => {
       e.preventDefault();
-      console.log('User menu clicked');
       // Could open a dropdown menu here
     });
   }

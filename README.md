@@ -463,7 +463,7 @@ user:{user_id}:energy_stats      # Aggregated stats
 - [API Documentation](API_DOCS.md) - Complete API reference
 - [Changelog](CHANGELOG.md) - Version history and changes
 - [Contributing Guide](CONTRIBUTING.md) - Development guidelines
-- [Quick Start Guide](QUICKSTART.md) - Simplified setup instructions
+- Quick start instructions are documented in the `Quick Start` section above
 
 ## 🐛 Troubleshooting
 
