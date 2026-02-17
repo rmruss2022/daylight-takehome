@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { devicesAPI } from '../api/services';
-import { DeviceStats, Device } from '../types';
+import type { DeviceStats, Device } from '../types';
 import DeviceList from '../components/DeviceList';
 
 const Dashboard: React.FC = () => {
@@ -18,29 +18,22 @@ const Dashboard: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      console.log('[Dashboard] Starting to load data...');
       
       const [statsData, devicesData] = await Promise.all([
         devicesAPI.getStats(),
         devicesAPI.getAll(),
       ]);
       
-      console.log('[Dashboard] Stats data received:', statsData);
-      console.log('[Dashboard] Stats is truthy?', !!statsData);
-      console.log('[Dashboard] Devices data received:', devicesData);
-      console.log('[Dashboard] Devices count:', devicesData.length);
       
       setStats(statsData);
       setDevices(devicesData);
       
-      console.log('[Dashboard] State updated. Stats:', statsData);
     } catch (err: any) {
       setError('Failed to load dashboard data');
       console.error('[Dashboard] Load error:', err);
       console.error('[Dashboard] Error details:', err.response?.data || err.message);
     } finally {
       setLoading(false);
-      console.log('[Dashboard] Loading complete');
     }
   };
 
@@ -62,8 +55,6 @@ const Dashboard: React.FC = () => {
     );
   }
 
-  // Debug: Log current state at render time
-  console.log('[Dashboard] Rendering. Stats:', stats, 'Devices:', devices.length);
 
   return (
     <div style={styles.container}>

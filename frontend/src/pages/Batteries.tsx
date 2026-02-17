@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { batteriesAPI } from '../api/services';
-import { Battery } from '../types';
+import type { Battery } from '../types';
 
 const Batteries: React.FC = () => {
   const [batteries, setBatteries] = useState<Battery[]>([]);
